@@ -8,6 +8,24 @@ Transform::Transform()
 	scale = 1.;
 }
 
+Vector3d operator*(const Matrix& matrix, const Vector3d& vec)
+{
+	Vector3d res;
+	res.x = matrix[0][0] * vec.x + matrix[0][1] * vec.y + matrix[0][2] * vec.z;
+	res.y = matrix[1][0] * vec.x + matrix[1][1] * vec.y + matrix[1][2] * vec.z;
+	res.z = matrix[2][0] * vec.x + matrix[2][1] * vec.y + matrix[2][2] * vec.z;
+	return res;
+}
+
+Point3d operator*(const Matrix& matrix, const Point3d& vec)
+{
+	Point3d res;
+	res.x = matrix[0][0] * vec.x + matrix[0][1] * vec.y + matrix[0][2] * vec.z;
+	res.y = matrix[1][0] * vec.x + matrix[1][1] * vec.y + matrix[1][2] * vec.z;
+	res.z = matrix[2][0] * vec.x + matrix[2][1] * vec.y + matrix[2][2] * vec.z;
+	return res;
+}
+
 Transform::Transform(const Point3d& position, const Matrix& rotation, double scale)
 {
 	this->position = position;

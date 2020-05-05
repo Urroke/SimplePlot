@@ -47,7 +47,13 @@ void Curve::render(const drawOption&) const
 	glColor3d(1, 0, 0);
 	double x_p, y_p;
 	iterator(
-		[](double x, double y, int i)->double {
+		[&](double x, double y, int i)->double {
+			Point3d pnt(x, y, 0);
+			pnt = this->lscPoint(pnt);
+			pnt = transform.rotation*pnt;
+			pnt = this->gscPoint(pnt);
+			x = pnt.x;
+			y = pnt.y;
 			glBegin(GL_POINTS);
 			glVertex3d(x, y, 0);
 			glEnd();

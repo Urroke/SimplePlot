@@ -13,54 +13,90 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{4e2c55ac-c0b9-402d-b62a-0b20f25632a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Math">
+      <UniqueIdentifier>{b267bab5-18e5-4f04-aa66-785c73070a08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Camera">
+      <UniqueIdentifier>{330ee38a-ea93-43fc-9534-db0c5bc11d83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Camera">
+      <UniqueIdentifier>{b3535938-e8b4-4caf-8d12-0d3e2b48cbe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common">
+      <UniqueIdentifier>{d516820a-a972-4c07-b4e7-a56fe824ecac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common\UserEventSystem">
+      <UniqueIdentifier>{91d33e68-28b4-41a6-9957-fba4fb431325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{53f21cc5-55f4-4f3d-b313-42265741189e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\UserEventSystem">
+      <UniqueIdentifier>{9dec23e2-dcab-47ae-84f4-812e09b85db3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Curve.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SceneObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Vector3d.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
     <ClCompile Include="Point3d.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3d.cpp">
+    <ClCompile Include="Curve.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UserEventSystem.cpp">
+      <Filter>Source Files\Common\UserEventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="EventVector.cpp">
+      <Filter>Source Files\Common\UserEventSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Curve.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SceneObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Vector3d.h">
+      <Filter>Header Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="Point3d.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Vector3d.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Curve.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EventVector.h">
+      <Filter>Header Files\Common\UserEventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="UserEventSystem.h">
+      <Filter>Header Files\Common\UserEventSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
