@@ -27,9 +27,6 @@ public:
 		for (auto it = handlers.begin(); it != handlers.end(); ++it) {
 			it->second(c,x,y);
 		}
-	}
-	
-
-
+	}	
 };
 

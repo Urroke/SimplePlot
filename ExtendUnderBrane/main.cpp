@@ -51,7 +51,7 @@ int main(int argc, char ** argv) {
 	
 	double angle = 0;
 	Curve one([](double x)->double {return x * x; }, { -1, 1 });
-	Curve two([](double x)->double {return std::sin(x); }, { -2, 2 });
+	Curve two([](double x)->double {return std::sin(x); }, { -50, 50 });
 	mainScene += one;
 	mainScene += two;
 

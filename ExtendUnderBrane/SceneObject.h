@@ -2,13 +2,7 @@
 #include "transform.h"
 #include <GL/glut.h>
 
-struct drawOption
-{
-	Vector3d color;
-	double lineWidth;
-	double pointRadius;
-	double derivParam;
-};
+
 
 class SceneObject
 {
@@ -22,7 +16,7 @@ public:
 	virtual Point3d gscPoint(const Point3d&) const;
 	int id;
 	SceneObject();
-	virtual void render(const drawOption&) const = 0;
-	~SceneObject() = default;
+	virtual void render() const = 0;
+	virtual ~SceneObject() = default;
 };
 

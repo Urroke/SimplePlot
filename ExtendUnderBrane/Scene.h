@@ -6,17 +6,20 @@
 class Scene
 {
 	std::vector<const SceneObject*> objects;
-	std::vector<const std::function<void(void)>*> callBacks;
-	drawOption option;
+	std::vector<const std::function<void()>*> callBacks;
 public:
-	Scene() = default;
-	~Scene() = default;
-	//Подписываем объект на сцену
+	Scene();
+	~Scene();
+	/*\
+		Добавить объект на сцену
+	*/
 	Scene& operator+=(const SceneObject&);
-	//Отписываем объект от сцены
+	/*\
+		Удалить объект со сцены
+	*/
 	Scene& operator-=(const SceneObject&);
 
-	void subscribeCallBack(const std::function<void(void)>&);
+	void subscribeCallBack(const std::function<void()>&);
 	void render();
 };
 
