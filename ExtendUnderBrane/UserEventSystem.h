@@ -3,13 +3,23 @@
 
 class UserEventSystem
 {
-	EventVector<void(void)> onKeyPress;
-	static UserEventSystem instance;
-
-
+	static UserEventSystem* instance;
+	UserEventSystem() = default;
+	~UserEventSystem() = default;
 public:
+	static UserEventSystem& getInstance() {
+		if (instance == nullptr) {
+			instance = new UserEventSystem();
+		}
+		return *instance;
+	}
+	EventVector<void(unsigned char, int, int)> onKeyPress;
 
 	
+
+	
+
+
 
 	/*
 	Do not call this method explicitly. Used to gather user input from Glut.
@@ -17,7 +27,7 @@ public:
 */
 	void keyboard_event(const unsigned char c, const int x, const int y) const {
 		printf("%c %d %d", c, x, y);
-		//instance.onKeyPress.call();
+		instance->onKeyPress.call(c,x,y);
 	}
 	/*
 		Do not call this method explicitly. Used to gather user input from Glut.

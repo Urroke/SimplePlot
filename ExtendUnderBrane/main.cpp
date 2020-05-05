@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include <GL/glut.h>
 #include "Camera.h"
+#include "UserEventSystem.h"
 #include "GL/freeglut.h"
 #include "GL/freeglut_ext.h"
 #include "GL/freeglut_std.h"
@@ -26,6 +27,8 @@ static float lmodel_oneside[] =
 { GL_FALSE };
 
  Camera* Camera::instance;
+ UserEventSystem* UserEventSystem::instance;
+
 void mouse(int button, int state, int x, int y)
 {
 	printf("Scroll At %d %d\n", button, state);
@@ -54,8 +57,11 @@ int main(int argc, char **argv)
 	glutAddMenuEntry("Two-sided lighting", 1);
 	glutAddMenuEntry("One-sided lighting", 2);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
-	glutKeyboardFunc(keyboard);
-	glutMouseWheelFunc([](int btn, int dir, int x,int y) {
+	glutKeyboardFunc([](unsigned char c, int x, int y){
+		UserEventSystem::getInstance().keyboard_event(c, x, y);
+		});
+	glutMouseWheelFunc([](int btn, int dir, int x, int y) {
+		UserEventSystem::getInstance().mousewhell_event(btn, dir, x, y);
 		});
 
 	//glOrtho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
@@ -76,6 +82,7 @@ void drawScene(void)
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 	glPushMatrix();
 	gluQuadricDrawStyle(quadObj, GLU_FILL);
@@ -118,9 +125,7 @@ void animation(void)
 		glutIdleFunc(NULL);
 }
 
-void keyboard(unsigned char c, int x, int y)
-{
-}
+
 
 void menu(int choice)
 {
