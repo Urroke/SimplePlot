@@ -14,7 +14,7 @@ struct {
 class Curve : public SceneObject
 {
 	real_function function;
-	Interval interval{};
+	Interval interval;
 public:
 	Curve();
 	Curve(const real_function& function, const Interval& interval);
@@ -24,7 +24,7 @@ public:
 		Vector3d color;
 		double lineWidth;
 		double pointRadius;
-		double derivParam;
+		double derivedParam;
 
 	} drawOptions;
 

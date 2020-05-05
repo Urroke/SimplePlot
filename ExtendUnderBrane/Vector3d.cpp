@@ -29,7 +29,7 @@ Vector3d& Vector3d::operator = (const Vector3d& vector)
 }
 
 
-void Vector3d::setCoord(double x, double y, double z)
+void Vector3d::setCoordinates(const double x, const double y, const double z)
 {
 	this->x = x;
 	this->y = y;
@@ -50,7 +50,7 @@ double Vector3d::magnitude() const
 
 void Vector3d::normalize()
 {
-	double length = magnitude();
+	const double length = magnitude();
 	x /= length;
 	y /= length;
 	z /= length;
@@ -58,11 +58,8 @@ void Vector3d::normalize()
 
 Vector3d Vector3d::normal() const
 {
-	double length = magnitude();
+	const double length = magnitude();
 	return Vector3d(x/ length, y / length, z / length);
 }
 
-Vector3d Vector3d::getVector() const
-{
-	return Vector3d();
-}
+Vector3d::~Vector3d() = default;

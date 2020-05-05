@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
 #include "Curve.h"
 #include "Scene.h"
 #include <GL/glut.h>
@@ -9,17 +9,19 @@
 #include "GL/freeglut.h"
 #include "GL/freeglut_ext.h"
 #include "GL/freeglut_std.h"
-  /* function declarations */
+#include "Cube.h"
+/* function declarations */
 
 //==========================================================================
-Scene mainScene;
+Scene Scene::instance;
+
 int width = 1200, height = 800;
 
 //==========================================================================
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(1.0, 0.0, 0.0);
-	mainScene.render(); 
+	Scene::getInstance().render();
 	glFlush();
 }
 
@@ -52,18 +54,20 @@ int main(int argc, char ** argv) {
 	double angle = 0;
 	Curve one([](double x)->double {return x * x; }, { -1, 1 });
 	Curve two([](double x)->double {return std::sin(x); }, { -50, 50 });
-	mainScene += one;
-	mainScene += two;
+	Cube cube;
+	Scene::getInstance() += cube;
+	Scene::getInstance() += one;
 
-	std::function<void(void)> kadr = [&]()->void
+	const std::function<void()> eachFrame = [&]()->void
 	{
 		angle+=0.01;
 		one.transform.setRotation(angle, Vector3d(1, 0, 0));
 		two.transform.setRotation(angle, Vector3d(0, 1, 0));
+		cube.transform.setRotation(angle, Vector3d(0, 1, 0));
 		//std::cout << "LEL\n";
 	};
 
-	mainScene.subscribeCallBack(kadr);
+	Scene::getInstance().subscribeCallBack(eachFrame);
 
 	glutDisplayFunc(display);
 	glutIdleFunc(display);

@@ -1,5 +1,5 @@
 #pragma once
-#include "transform.h"
+#include "Transform.h"
 #include <GL/glut.h>
 
 
