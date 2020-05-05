@@ -56,7 +56,6 @@ int main(int argc, char **argv)
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	glutKeyboardFunc(keyboard);
 	glutMouseWheelFunc([](int btn, int dir, int x,int y) {
-		Camera::getInstance()->mousewhell_event(btn, dir, x, y);
 		});
 
 	//glOrtho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
@@ -121,7 +120,6 @@ void animation(void)
 
 void keyboard(unsigned char c, int x, int y)
 {
-	Camera::getInstance()->keyboard_event(c, x, y);
 }
 
 void menu(int choice)
