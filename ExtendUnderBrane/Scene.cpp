@@ -23,8 +23,16 @@ Scene& Scene::operator-=(const SceneObject& obj)
 }
 void Scene::render()
 {
+	glClear(GL_COLOR_BUFFER_BIT);
 	for (int i = 0; i < objects.size(); ++i)
 	{
 		objects[i]->render(option);
 	}
+	for (int i = 0; i < callBacks.size(); ++i)
+		(*callBacks[i])();
+}
+
+void Scene::subscribeCallBack(const std::function<void(void)>& call)
+{
+	callBacks.push_back(&call);
 }
