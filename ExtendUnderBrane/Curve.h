@@ -18,7 +18,6 @@ private:
 	interval x;
 public:
 	Curve();
-
 	Curve(const real_function& func, const interval&);
 
 	void iterator(const real_function2_index& func, double step) const;
