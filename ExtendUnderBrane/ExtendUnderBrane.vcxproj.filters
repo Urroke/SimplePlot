@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Camera">
       <UniqueIdentifier>{b3535938-e8b4-4caf-8d12-0d3e2b48cbe9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Common">
+      <UniqueIdentifier>{d516820a-a972-4c07-b4e7-a56fe824ecac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneObject.cpp">
@@ -48,6 +51,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EventVector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneObject.h">
@@ -67,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Header Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="EventVector.h">
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <GL/glut.h>
-
+#include "Camera.h"
+#include "GL/freeglut.h"
+#include "GL/freeglut_ext.h"
+#include "GL/freeglut_std.h"
+#include "GL/glut.h"
   /* function declarations */
 
 void
@@ -19,8 +21,13 @@ static float lmodel_twoside[] =
 static float lmodel_oneside[] =
 { GL_FALSE };
 
-int
-main(int argc, char **argv)
+ Camera* Camera::instance;
+void mouse(int button, int state, int x, int y)
+{
+	printf("Scroll At %d %d\n", button, state);
+}
+
+int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 
@@ -43,12 +50,14 @@ main(int argc, char **argv)
 	glutAddMenuEntry("One-sided lighting", 2);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	glutKeyboardFunc(keyboard);
+	glutMouseWheelFunc([](int btn, int dir, int x,int y) {
+		Camera::getInstance()->mousewhell_event(btn, dir, x, y);
+		});
 	glutMainLoop();
 	return 0;             /* ANSI C requires main to return int. */
 }
 
-void
-drawScene(void)
+void drawScene(void)
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -66,8 +75,7 @@ drawScene(void)
 	glutSwapBuffers();
 }
 
-void
-setMatrix(void)
+void setMatrix(void) 
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -78,8 +86,7 @@ setMatrix(void)
 
 int count = 0;
 
-void
-animation(void)
+void animation(void)
 {
 	ax += 5.0;
 	ay -= 2.0;
@@ -96,16 +103,9 @@ animation(void)
 		glutIdleFunc(NULL);
 }
 
-/* ARGSUSED1 */
 void keyboard(unsigned char c, int x, int y)
 {
-	switch (c) {
-	case 27:
-		exit(0);
-		break;
-	default:
-		break;
-	}
+	Camera::getInstance()->keyboard_event(c, x, y);
 }
 
 void menu(int choice)
