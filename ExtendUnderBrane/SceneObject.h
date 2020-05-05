@@ -13,10 +13,13 @@ struct drawOption
 class SceneObject
 {
 private:
+
+protected:
+	
+public:
 	Transform transform;
-	Point3d lcsPoint(const Point3d&);		// หัส
-	Point3d globalPoint(const Point3d&);	// รัส
-public: 
+	virtual Point3d lscPoint(const Point3d&) const;		
+	virtual Point3d gscPoint(const Point3d&) const;
 	int id;
 	SceneObject();
 	virtual void render(const drawOption&) const = 0;
