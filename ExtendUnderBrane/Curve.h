@@ -3,6 +3,8 @@
 #include "SceneObject.h"
 
 using real_function = std::function<double(double)>;
+using real_function2 = std::function<double(double, double)>;
+using real_function2_index = std::function<double(double, double, int)>;
 using interval = 
 struct {
 	double x1;
@@ -17,13 +19,13 @@ private:
 public:
 	Curve();
 
-	Curve(real_function func, interval);
+	Curve(const real_function& func, const interval&);
 
-	void iterator(real_function func, double step) const;
+	void iterator(const real_function2_index& func, double step) const;
 
-	void setInterval(interval);
+	void setInterval(const interval&);
 
-	void setFunction(real_function func);
+	void setFunction(const real_function& func);
 
 	double operator()(double) const;
 

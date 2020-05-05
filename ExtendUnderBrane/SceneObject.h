@@ -17,7 +17,8 @@ private:
 	Point3d lcsPoint(const Point3d&);
 	Point3d globalPoint(const Point3d&);
 public:
-	SceneObject() = default;
+	int id;
+	SceneObject();
 	virtual void render(const drawOption&) const = 0;
 	~SceneObject() = default;
 };

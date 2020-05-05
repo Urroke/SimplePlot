@@ -55,7 +55,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "Curve.h"
+#include "Scene.h"
 #include <GL/glut.h>
 
   /* function declarations */
@@ -97,6 +98,12 @@ main(int argc, char **argv)
 	glutAddMenuEntry("One-sided lighting", 2);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	glutKeyboardFunc(keyboard);
+	glutMainLoop();
+	Curve one([](double x)->double {return x * x; }, { -1, 1 });
+	Scene mainScene;
+	mainScene += one;
+	mainScene.render();
+	glutDisplayFunc(drawScene);
 	glutMainLoop();
 	return 0;             /* ANSI C requires main to return int. */
 }
