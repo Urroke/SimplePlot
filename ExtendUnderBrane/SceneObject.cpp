@@ -11,3 +11,9 @@ Point3d SceneObject::globalPoint(const Point3d& point)
 	Point3d res = point + transform.position.toVector();
 	return res;
 }
+
+SceneObject::SceneObject()
+{
+	//Нормальный ключ воткнуть
+	id = rand()%1000000;
+}

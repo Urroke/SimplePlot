@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "Curve.h"
+#include "Scene.h"
+#include <GL/glut.h>
 #include "Camera.h"
 #include "GL/freeglut.h"
 #include "GL/freeglut_ext.h"
 #include "GL/freeglut_std.h"
-#include "GL/glut.h"
   /* function declarations */
 
 int width = 1200, height = 800;
@@ -61,6 +63,12 @@ int main(int argc, char **argv)
 	//gluPerspective(45.0f, (float)width / (float)height, 0.1f, 100.0f);
 	//glm::mat4 proj = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 100.0f);
 
+	glutMainLoop();
+	Curve one([](double x)->double {return x * x; }, { -1, 1 });
+	Scene mainScene;
+	mainScene += one;
+	mainScene.render();
+	glutDisplayFunc(drawScene);
 	glutMainLoop();
 	return 0;             /* ANSI C requires main to return int. */
 }

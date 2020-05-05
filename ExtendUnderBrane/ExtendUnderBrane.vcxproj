@@ -135,6 +135,7 @@
     <ClCompile Include="Curve.cpp" />
     <ClCompile Include="EventVector.cpp" />
     <ClCompile Include="Point3d.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Curve.h" />
     <ClInclude Include="EventVector.h" />
     <ClInclude Include="Point3d.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vector3d.h" />

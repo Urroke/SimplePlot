@@ -14,10 +14,11 @@ class SceneObject
 {
 private:
 	Transform transform;
-	Point3d lcsPoint(const Point3d&);
-	Point3d globalPoint(const Point3d&);
-public:
-	SceneObject() = default;
+	Point3d lcsPoint(const Point3d&);		// หัส
+	Point3d globalPoint(const Point3d&);	// รัส
+public: 
+	int id;
+	SceneObject();
 	virtual void render(const drawOption&) const = 0;
 	~SceneObject() = default;
 };
