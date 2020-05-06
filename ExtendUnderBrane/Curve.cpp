@@ -49,9 +49,10 @@ void Curve::render(const drawOption&) const
 	iterator(
 		[&](double x, double y, int i)->double {
 			Point3d pnt(x, y, 0);
-			pnt = this->lcsPoint(pnt);
-			pnt = transform.rotation*pnt;
+			//pnt = this->lcsPoint(pnt);
+			pnt *= transform.scale;
 			pnt = this->globalPoint(pnt);
+			
 			x = pnt.x;
 			y = pnt.y;
 			glBegin(GL_POINTS);

@@ -62,6 +62,42 @@ Vector3d Vector3d::normal() const
 	return Vector3d(x/ length, y / length, z / length);
 }
 
+Vector3d& Vector3d::operator += (const Vector3d& vector)
+{
+	x += vector.x;
+	y += vector.y;
+	z += vector.z;
+	return *this;
+}
+
+Vector3d Vector3d::operator + (const Vector3d& vector)
+{
+	Vector3d res(x + vector.x, y + vector.y, z + vector.z);
+	return res;
+}
+
+Vector3d Vector3d::operator * (double scale)
+{
+	Vector3d res(x*scale, y*scale, z*scale);
+	return res;
+}
+
+double Vector3d::operator * (const Vector3d& vector)
+{
+	double res = x * vector.x + y * vector.y + z * vector.z;
+	return res;
+}
+
+
+Vector3d& Vector3d::operator *= (double scale)
+{
+	x *= scale;
+	y *= scale;
+	z *= scale;
+	return *this;
+
+}
+
 Vector3d Vector3d::getVector() const
 {
 	return Vector3d();

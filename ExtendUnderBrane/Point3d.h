@@ -19,7 +19,7 @@ public:
 	Point3d getPoint() const;
 
 	const char* toStr();
-
+	Point3d& operator*=(double);
 	Point3d& operator+=(const Vector3d&);
 	Point3d& operator-=(const Vector3d&);
 
