@@ -1,35 +1,31 @@
 #pragma once
-#include "EventVector.h"
-#include <stdio.h>
+#include "pch.h"
 #include <vector>
 #include <functional>
+
+#include "EventVector.h"
+#include "Transform.h"
+
 class Camera
 {
+private:
+
 	Camera();
 	Camera(Camera const&); 
-	Camera& operator= (Camera const&);  
+	Camera& operator= (Camera const&);
 
+	void lookAt(const Point3d& position, const Point3d& target, const Vector3d& refAxis);
 
-
-
-	static Camera* instance;
+	static Camera instance;
 public:
-	static Camera* getInstance() {
-		if (instance == nullptr) {
-			instance = new Camera();
-			
-		}
+	static Camera& getInstance() {
 		return instance;
 	}
 
+	Transform tfm;
 
-	
+	void update();
 
-
-	
-	
-
-
-	~Camera();
+	~Camera() = default;
 };
 

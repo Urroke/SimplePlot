@@ -4,7 +4,7 @@
 Transform::Transform()
 {
 	position = Point3d(0, 0, 0);
-	setRotation(0, Vector3d(0, 0, 0));
+	setRotation(0, Vector3d(0, 0, 1));
 	scale = 1.;
 }
 
@@ -14,6 +14,22 @@ Vector3d operator*(const Matrix& matrix, const Vector3d& vec)
 	res.x = matrix[0][0] * vec.x + matrix[0][1] * vec.y + matrix[0][2] * vec.z;
 	res.y = matrix[1][0] * vec.x + matrix[1][1] * vec.y + matrix[1][2] * vec.z;
 	res.z = matrix[2][0] * vec.x + matrix[2][1] * vec.y + matrix[2][2] * vec.z;
+	return res;
+}
+
+Matrix operator*(const Matrix& mat1, const Matrix& mat2)
+{
+	Matrix res;
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j)
+		{
+			res[i][j] = 0;
+			for (int k = 0; k < 3; ++k)
+			{
+				res[i][j] += mat1[i][k] * mat2[k][j];
+			}
+		}
+	}
 	return res;
 }
 
@@ -64,3 +80,29 @@ void Transform::setRotation(double a, const Vector3d& vec)
 	rotation[2][1] = d.y*d.z*cosa1 + d.x*sina;;
 	rotation[2][2] = cosa + d.z*d.z*cosa1;
 }
+
+void Transform::rotateBy(double a, const Vector3d& vec)
+{
+	Matrix rotate = getRotation(a, vec);
+	rotation = rotation * rotate;
+}
+
+Matrix Transform::getRotation(double a, const Vector3d& vec)
+{
+	Vector3d d = vec.normal();
+	double cosa = std::cos(a);
+	double cosa1 = 1 - cosa;
+	double sina = std::sin(a);
+	Matrix rotate;
+	rotate[0][0] = cosa + d.x * d.x * cosa1;
+	rotate[0][1] = d.x * d.y * cosa1 - d.z * sina;
+	rotate[0][2] = d.x * d.z * cosa1 + d.y * sina;
+	rotate[1][0] = d.x * d.y * cosa1 + d.z * sina;
+	rotate[1][1] = cosa + d.y * d.y * cosa1;
+	rotate[1][2] = d.y * d.z * cosa1 - d.x * sina;
+	rotate[2][0] = d.x * d.z * cosa1 - d.y * sina;
+	rotate[2][1] = d.y * d.z * cosa1 + d.x * sina;;
+	rotate[2][2] = cosa + d.z * d.z * cosa1;
+	return rotate;
+}
+

@@ -16,7 +16,9 @@ struct Transform
 	void scaleTo(double);
 	void translateTo(const Vector3d&);
 	void setPosition(const Point3d&);
+	Matrix getRotation(double, const Vector3d&);
 	void setRotation(double, const Vector3d&);
+	void rotateBy(double, const Vector3d&);
 };
 
 Vector3d operator*(const Matrix& matrix, const Vector3d& vec);

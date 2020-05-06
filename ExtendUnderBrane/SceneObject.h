@@ -2,8 +2,6 @@
 #include "Transform.h"
 #include <GL/glut.h>
 
-
-
 class SceneObject
 {
 private:

@@ -5,6 +5,7 @@ enum class MouseWheelDirection
 	UP,
 	DOWN
 };
+
 class UserEventSystem
 {
 	static UserEventSystem instance;
@@ -14,24 +15,21 @@ public:
 	static UserEventSystem& getInstance() {		
 		return instance;
 	}
-	EventVector<void,unsigned char, int, int> onKeyPress;
+	EventVector<void, unsigned char, int, int> onKeyPress;
+	EventVector<void, unsigned char, int, int> onKeyUp;
 	EventVector<void, MouseWheelDirection,int,int> onMouseWheel;
-
-
-
-	
-
-	
-
-
 
 	/*
 	Do not call this method explicitly. Used to gather user input from Glut.
 	Не вызывайте метод самостоятельно. Он собирает пользовательский ввод через Glut;
 	*/
 	void keyboard_event(const unsigned char c, const int x, const int y) const {
-		printf("%c %d %d", c, x, y);
+		//printf("%c %d %d", c, x, y);
 		instance.onKeyPress.call(c,x,y);
+	}
+	void keyboard_event_up(const unsigned char c, const int x, const int y) const {
+		//printf("%c %d %d", c, x, y);
+		instance.onKeyUp.call(c, x, y);
 	}
 	/*
 		Do not call this method explicitly. Used to gather user input from Glut.

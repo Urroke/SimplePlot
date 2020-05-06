@@ -7,13 +7,13 @@ class Scene
 {
 	
 	std::vector<const SceneObject*> objects;
-	std::vector<const std::function<void()>*> callBacks;
+	std::function<void(void)> callBack;
 	Scene();
 	~Scene();
 
 	Scene(const Scene& other);
 
-	Scene(Scene&& other) noexcept
+	/*Scene(Scene&& other) noexcept
 		: objects(std::move(other.objects)),
 		  callBacks(std::move(other.callBacks))
 	{
@@ -35,7 +35,7 @@ class Scene
 		objects = std::move(other.objects);
 		callBacks = std::move(other.callBacks);
 		return *this;
-	}
+	}*/
 
 	static Scene instance;
 public:

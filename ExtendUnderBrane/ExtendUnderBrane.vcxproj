@@ -90,7 +90,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\freeglut\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -123,6 +124,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\freeglut\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -136,10 +139,17 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Curve.cpp" />
     <ClCompile Include="EventVector.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Point3d.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneObject.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UserEventSystem.cpp" />
     <ClCompile Include="Vector3d.cpp" />
@@ -149,6 +159,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Curve.h" />
     <ClInclude Include="EventVector.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="Point3d.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneObject.h" />

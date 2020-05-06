@@ -39,11 +39,12 @@ void Scene::render()
 	{
 		object->render();
 	}
-	for (auto& callBack : callBacks)
-		(*callBack)();
+	//for (auto& callBack : callBacks)
+	//	(*callBack)();
+	callBack();
 }
 
 void Scene::subscribeCallBack(const std::function<void(void)>& call)
 {
-	callBacks.push_back(&call);
+	callBack = call;
 }

@@ -69,6 +69,9 @@
     <ClCompile Include="EventVector.cpp">
       <Filter>Source Files\Common\UserEventSystem</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Cube.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="UserEventSystem.h">
       <Filter>Header Files\Common\UserEventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>Header Files\Math</Filter>
