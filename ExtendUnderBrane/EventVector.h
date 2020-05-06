@@ -8,24 +8,26 @@
 #define ptr __int32
 #endif // 
 
-template <typename FunctionTemplate>
+
+
+template <typename ReturnType, typename... Args>
 class EventVector
 {
-	std::unordered_map<ptr,std::function<FunctionTemplate>> handlers;
+	 typedef std::function<ReturnType(Args...)> EventFunction;
+	std::unordered_map<ptr,EventFunction> handlers;
 	
 public:
 
-	ptr subscribe(std::function<FunctionTemplate>& function) {		
+	ptr subscribe(EventFunction& function) {		
 		handlers[(ptr)&function] = function;	
 		return (ptr)&function;
 	}
 	void unsubcribe(ptr pointer) {	
 		handlers.erase(pointer);
 	}
-	
-	void call(unsigned char c, int x, int y) {
+	void call(Args... args) {
 		for (auto it = handlers.begin(); it != handlers.end(); ++it) {
-			it->second(c,x,y);
+			it->second(args...);
 		}
 	}	
 };

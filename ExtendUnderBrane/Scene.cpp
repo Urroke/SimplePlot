@@ -4,10 +4,7 @@ Scene::Scene() = default;
 
 Scene::~Scene() = default;
 
-Scene::Scene(const Scene& other): objects(other.objects),
-                                  callBacks(other.callBacks)
-{
-}
+Scene::Scene(const Scene & other) = default;
 
 Scene& Scene::getInstance()
 {

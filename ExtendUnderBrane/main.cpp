@@ -14,6 +14,7 @@
 
 //==========================================================================
 Scene Scene::instance;
+UserEventSystem UserEventSystem::instance;
 
 int width = 1200, height = 800;
 
@@ -56,11 +57,11 @@ int main(int argc, char ** argv) {
 	Curve two([](double x)->double {return std::sin(x); }, { -50, 50 });
 	Cube cube;
 	Scene::getInstance() += cube;
-	Scene::getInstance() += one;
+	Scene::getInstance() += two;
 
 	const std::function<void()> eachFrame = [&]()->void
 	{
-		angle+=0.01;
+		angle+=0.1;
 		one.transform.setRotation(angle, Vector3d(1, 0, 0));
 		two.transform.setRotation(angle, Vector3d(0, 1, 0));
 		cube.transform.setRotation(angle, Vector3d(0, 1, 0));
@@ -68,8 +69,22 @@ int main(int argc, char ** argv) {
 	};
 
 	Scene::getInstance().subscribeCallBack(eachFrame);
-
+	std::function<void(MouseWheelDirection,int,int)> func = [](MouseWheelDirection dir, int x, int y)
+	{
+		printf("%s, %d, %d\n", dir == MouseWheelDirection::UP ? "UP" : "DOWN", x, y);
+	};
+	
+	UserEventSystem::getInstance().onMouseWheel.subscribe(func);
+	
 	glutDisplayFunc(display);
+	glutMouseWheelFunc([](int button, int dir, int x, int y)
+		{
+			UserEventSystem::getInstance().mousewhell_event(button, dir, x, y);
+		});
+	glutKeyboardFunc([](unsigned char c, int x, int y)
+		{
+			UserEventSystem::getInstance().keyboard_event(c, x, y);
+		});
 	glutIdleFunc(display);
 	Initialize();
 	
