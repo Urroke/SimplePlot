@@ -5,18 +5,52 @@
 
 class Scene
 {
+	
 	std::vector<const SceneObject*> objects;
-	std::vector<const std::function<void(void)>*> callBacks;
-	drawOption option;
+	std::vector<const std::function<void()>*> callBacks;
+	Scene();
+	~Scene();
+
+	Scene(const Scene& other);
+
+	Scene(Scene&& other) noexcept
+		: objects(std::move(other.objects)),
+		  callBacks(std::move(other.callBacks))
+	{
+	}
+
+	Scene& operator=(const Scene& other)
+	{
+		if (this == &other)
+			return *this;
+		objects = other.objects;
+		callBacks = other.callBacks;
+		return *this;
+	}
+
+	Scene& operator=(Scene&& other) noexcept
+	{
+		if (this == &other)
+			return *this;
+		objects = std::move(other.objects);
+		callBacks = std::move(other.callBacks);
+		return *this;
+	}
+
+	static Scene instance;
 public:
-	Scene() = default;
-	~Scene() = default;
-	//Подписываем объект на сцену
+	static Scene& getInstance();
+
+	/*\
+		Добавить объект на сцену
+	*/
 	Scene& operator+=(const SceneObject&);
-	//Отписываем объект от сцены
+	/*\
+		Удалить объект со сцены
+	*/
 	Scene& operator-=(const SceneObject&);
 
-	void subscribeCallBack(const std::function<void(void)>&);
+	void subscribeCallBack(const std::function<void()>&);
 	void render();
 };
 

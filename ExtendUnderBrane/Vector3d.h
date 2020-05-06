@@ -5,7 +5,7 @@
 class Vector3d
 {
 public:
-	double x, y, z;
+	double x{}, y{}, z{};
 
 	Vector3d();
 	Vector3d(double x, double y, double z);
@@ -18,14 +18,12 @@ public:
 	Vector3d operator * (double);
 	Vector3d operator + (const Vector3d& vector);
 
-	void setCoord(double x, double y, double z);
+	void setCoordinates(double x, double y, double z);
 	void setVector(const Vector3d& vector);
-	Vector3d getVector() const;
 
 	double magnitude() const;
 	void normalize();
 	Vector3d normal() const;
 
-	~Vector3d() = default;
 };
 #endif

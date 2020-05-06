@@ -1,12 +1,12 @@
 #include "SceneObject.h"
 
-Point3d SceneObject::lcsPoint(const Point3d& point) const
+Point3d SceneObject::lscPoint(const Point3d& point) const
 {
 	Point3d res = point - transform.position.toVector();
 	return res;
 }
 
-Point3d SceneObject::globalPoint(const Point3d& point) const
+Point3d SceneObject::gscPoint(const Point3d& point) const
 {
 	Point3d res = point + transform.position.toVector();
 	return res;

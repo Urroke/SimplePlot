@@ -1,5 +1,16 @@
 #include "Scene.h"
 
+Scene::Scene() = default;
+
+Scene::~Scene() = default;
+
+Scene::Scene(const Scene & other) = default;
+
+Scene& Scene::getInstance()
+{
+	return instance;
+}
+
 Scene& Scene::operator+=(const SceneObject& obj)
 {
 	objects.push_back(&obj);
@@ -9,12 +20,12 @@ Scene& Scene::operator+=(const SceneObject& obj)
 
 Scene& Scene::operator-=(const SceneObject& obj)
 {
-	for (int i = 0; i < objects.size(); ++i)
+	for (auto i = 0; i < objects.size(); ++i)
 	{
 		if (objects[i]->id == obj.id)
 		{
 			for (int j = i; j < objects.size() - 1; ++j)
-				objects[j] = objects[j + 1];
+				objects[j] = objects[1 + j];
 			render();
 			return *this;
 		}
@@ -24,12 +35,12 @@ Scene& Scene::operator-=(const SceneObject& obj)
 void Scene::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	for (int i = 0; i < objects.size(); ++i)
+	for (auto& object : objects)
 	{
-		objects[i]->render(option);
+		object->render();
 	}
-	for (int i = 0; i < callBacks.size(); ++i)
-		(*callBacks[i])();
+	for (auto& callBack : callBacks)
+		(*callBack)();
 }
 
 void Scene::subscribeCallBack(const std::function<void(void)>& call)

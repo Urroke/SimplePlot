@@ -7,8 +7,6 @@ using Matrix = std::array<std::array<double, 3>, 3>;
 
 struct Transform
 {
-private:
-public:
 	Point3d position;
 	Matrix rotation;
 	double scale;

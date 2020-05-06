@@ -3,30 +3,30 @@
 
 Curve::Curve()
 {
-	x = { 0, 0 };
+	interval = { 0, 0 };
+	drawOptions = CurveDrawOption();
 }
 
 
-Curve::~Curve()
+Curve::~Curve() = default;
+
+Curve::Curve(const real_function& function, const Interval& interval)
 {
+	this->function = function;
+	this->interval = interval;
+	this->drawOptions = CurveDrawOption();
 }
 
-Curve::Curve(const real_function& func, const interval& interv)
+void Curve::iterator(const real_function2_index& func, const double step) const
 {
-	function = func;
-	x = interv;
-}
-
-void Curve::iterator(const real_function2_index& func, double step) const
-{
-	int i = 0;
-	for (double r = x.x1; r < x.x2; r += step,i++)
+	auto i = 0;
+	for (auto r = interval.x1; r < interval.x2; r += step,i++)
 		func(r, function(r), i);
 }
 
-void Curve::setInterval(const interval& intrv)
+void Curve::setInterval(const Interval& interval)
 {
-	x = intrv;
+	this->interval = interval;
 }
 
 void Curve::setFunction(const real_function& func)
@@ -34,14 +34,14 @@ void Curve::setFunction(const real_function& func)
 	function = func;
 }
 
-double Curve::operator()(double x) const
+double Curve::operator()(const double x) const
 {
 	return function(x);
 }
 
-void Curve::render(const drawOption&) const
+void Curve::render() const
 {
-	double step = 0.01;
+	const double step = 0.01;
 	glPointSize(1.);
 	glEnable(GL_POINT_SMOOTH);
 	glColor3d(1, 0, 0);
@@ -51,7 +51,7 @@ void Curve::render(const drawOption&) const
 			Point3d pnt(x, y, 0);
 			//pnt = this->lcsPoint(pnt);
 			pnt *= transform.scale;
-			pnt = this->globalPoint(pnt);
+			pnt = this->gscPoint(pnt);
 			
 			x = pnt.x;
 			y = pnt.y;

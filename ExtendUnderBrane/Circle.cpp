@@ -52,7 +52,7 @@ void Circle::collision(SolidBody* obj)
 
 }
 
-void Circle::render(const drawOption&) const
+void Circle::render() const
 {
 	double step = 0.1;
 	glPointSize(1.);
@@ -66,7 +66,7 @@ void Circle::render(const drawOption&) const
 		y = radius * std::sin(r);
 		Point3d pnt(x, y, 0);
 		pnt *= transform.scale;
-		pnt = this->globalPoint(pnt);
+		pnt = this->gscPoint(pnt);
 		x = pnt.x;
 		y = pnt.y;
 		glBegin(GL_POINTS);

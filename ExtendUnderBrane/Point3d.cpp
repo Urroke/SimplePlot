@@ -4,7 +4,7 @@ Point3d::Point3d()
 	x = y = z = 0;
 }
 
-Point3d::Point3d(double x, double y, double z)
+Point3d::Point3d(const double x, const double y, const double z)
 {
 	this->x = x;
 	this->y = y;
@@ -31,7 +31,7 @@ Point3d& Point3d::operator = (const Point3d& point)
 	return *this;
 }
 
-void Point3d::setPoint(double x, double y, double z)
+void Point3d::setPoint(const double x, const double y, const double z)
 {
 	this->x = x;
 	this->y = y;
@@ -77,10 +77,6 @@ Point3d& Point3d::operator*=(double scale)
 	return *this;
 }
 
-const char* Point3d::toStr()
-{
-	return "xyz";
-}
 
 Point3d Point3d::getPoint() const
 {
