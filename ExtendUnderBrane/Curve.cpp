@@ -44,7 +44,7 @@ void Curve::render(const drawOption&) const
 	double step = 0.01;
 	glPointSize(1.);
 	glEnable(GL_POINT_SMOOTH);
-	glColor3d(1, 0, 0);
+	glColor3d(1, 0, 0); // red
 	double x_p, y_p;
 	iterator(
 		[&](double x, double y, int i)->double {

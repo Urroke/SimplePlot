@@ -3,7 +3,8 @@
 // std
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
+#include <map>
 
 // for OpenGL
 #include <GL/glut.h>
