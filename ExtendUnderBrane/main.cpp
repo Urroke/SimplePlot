@@ -5,7 +5,9 @@
 
 //==========================================================================
 Scene mainScene;
-constexpr int width = 1200, height = 800;
+constexpr int WIDTH = 800, HEIGHT = 600;
+bool full_screen = false;
+int limit_frames = 60;
 
 // for glOrtho
 constexpr double glOleft = -10, glOright = 10;
@@ -25,7 +27,6 @@ static std::map<std::string, void*> fontMap = {
 
 /*
 //==========================================================================
-int limit_frames = 60;
 void timer(int t) {
 	glutPostRedisplay();
 	glutTimerFunc(1000 / 60, timer, 0);
@@ -33,10 +34,11 @@ void timer(int t) {
 
 //==========================================================================
 void display() {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor3f(1.0, 0.0, 0.0); // red
-	mainScene.render(); 
+	mainScene.render();
 	glFlush();
+	glutSwapBuffers();
 }
 
 //==========================================================================
@@ -70,10 +72,12 @@ int main(int argc, char ** argv) {
 	mainScene += two;
 
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-	glutInitWindowSize(width, height);
+
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	glutInitWindowSize(WIDTH, HEIGHT);
 	glutInitWindowPosition(100, 20);
 	glutCreateWindow("SimplePlot");
+
 	std::function<void(void)> kadr = [&]()->void
 	{
 		frame++;
@@ -94,7 +98,7 @@ int main(int argc, char ** argv) {
 	};
 
 	mainScene.subscribeCallBack(kadr);
-	
+
 	glutDisplayFunc(display);
 	glutIdleFunc(display);
 	Initialize();
