@@ -39,6 +39,7 @@ static float lmodel_oneside[] =
 void Initialize() {
 	glClearColor(0.8, 1.0, 0.6, 1.0);
 	glMatrixMode(GL_PROJECTION);
+	UserEventSystem::initialize();
 	glLoadIdentity();
 	glOrtho(-5.0, 5.0, -5.0, 5.0, -5.0, 5.0);
 }
@@ -75,16 +76,13 @@ int main(int argc, char ** argv) {
 	};
 	
 	UserEventSystem::getInstance().onMouseWheel.subscribe(func);
-	
+	std::function<void( int, int)> func1 = [](int x, int y)
+	{
+		printf("%d %d\n", x,y);
+	};
+
+	UserEventSystem::getInstance().onMouseMove.subscribe(func1);
 	glutDisplayFunc(display);
-	glutMouseWheelFunc([](int button, int dir, int x, int y)
-		{
-			UserEventSystem::getInstance().mousewhell_event(button, dir, x, y);
-		});
-	glutKeyboardFunc([](unsigned char c, int x, int y)
-		{
-			UserEventSystem::getInstance().keyboard_event(c, x, y);
-		});
 	glutIdleFunc(display);
 	Initialize();
 	
