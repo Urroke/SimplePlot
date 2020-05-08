@@ -10,8 +10,8 @@
 //#include <GL/GL.h>
 //#include <GL/GLU.h>
 
-#include <GL/glut.h>
 #include "UserEventSystem.h"
 #include "GL/freeglut.h"
-#include "GL/freeglut_ext.h"
-#include "GL/freeglut_std.h"
+
+#pragma comment(lib,"freeglut.lib")
+#pragma comment(lib, "opengl32.lib")

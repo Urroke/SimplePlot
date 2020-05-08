@@ -26,6 +26,26 @@ static std::map<std::string, void*> fontMap = {
 };
 
 //==========================================================================
+void print2dText(double x, double y, const char* str, std::string font = "8BY13")
+{
+	glRasterPos2d(x, y);
+	std::for_each(font.begin(), font.end(), [](char& c) {
+		c = ::toupper(c);
+		});
+	glutBitmapString(fontMap[font], reinterpret_cast<const unsigned char*>(str));
+}
+
+//==========================================================================
+void print3dText(double x, double y, double z, const char* str, std::string font = "8BY13")
+{
+	glRasterPos3d(x, y, z);
+	std::for_each(font.begin(), font.end(), [](char& c) {
+		c = ::toupper(c);
+		});
+	glutBitmapString(fontMap[font], reinterpret_cast<const unsigned char*>(str));
+}
+
+//==========================================================================
 void drawSnowMan() {
 
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -52,10 +72,39 @@ void drawSnowMan() {
 	glutSolidCone(0.08f, 0.5f, 10, 2);
 }
 
+int frame = 0;
+unsigned long long time = 0, timebase = 0;
+std::string str_fps;
+
+//==========================================================================
+void fpsPrint()
+{
+	glDisable(GL_DEPTH_TEST);
+	glColor3f(0.0f, 0.6f, 0.0f);
+	print2dText(0, 0, str_fps.c_str(), "roman24");
+	glEnable(GL_DEPTH_TEST);
+}
+//==========================================================================
+std::string fps_counter()
+{
+	str_fps.clear();
+	int fps = frame * 1000.0 / double(time - timebase);
+	str_fps += "fps: " + std::to_string(fps);
+	timebase = time;
+	frame = 0;
+	printf("%s\n", str_fps.c_str());
+	return str_fps;
+}
+
 //==========================================================================
 void display() {
 	// Clear Color and Depth Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	frame++;
+	time = glutGet(GLUT_ELAPSED_TIME);
+	if (time - timebase > 1000)
+		str_fps = fps_counter();
 
 	// Reset transformations
 	glLoadIdentity();
@@ -66,32 +115,54 @@ void display() {
 	// Draw ground
 	glColor3f(0.9f, 0.9f, 0.9f);
 	glBegin(GL_QUADS);			//plane
-	glVertex3f(-100.0f, 0.0f, -100.0f);
-	glVertex3f(-100.0f, 0.0f, 100.0f);
-	glVertex3f(100.0f, 0.0f, 100.0f);
-	glVertex3f(100.0f, 0.0f, -100.0f);
+		glVertex3f(-1000.0f, 0.0f, -1000.0f);
+		glVertex3f(-1000.0f, 0.0f, 1000.0f);
+		glVertex3f(1000.0f, 0.0f, 1000.0f);
+		glVertex3f(1000.0f, 0.0f, -1000.0f);
 	glEnd();
 
+
+	int x0 = 0, y0 = 0, z0 = 0, r = 100;
+	const int W = 255, H = 255, Z = 255;
+	const int step = 10;
+
+	//unsigned int data[H][W][Z];
+
+	for (int red = 0; red < W; red += step)
+	{
+		for (int green = 0; green < H; green += step)
+		{
+			for (int blue = 0; blue < Z; blue += step)
+			{
+				glPointSize(5);
+				glColor3f(red / 255.0, green / 255.0, blue / 255.0);
+				glBegin(GL_POINTS);
+				glVertex3f(red / 20.0, green / 20.0, blue / 20.0);
+				glEnd();
+				//GL_QUADS / GL_LINE_STRIP
+				//data[red][green][blue] = red * green * blue;
+			}
+		}
+	}
+
+	glLineWidth(50);
+	glColor3f(0, 0, 0);
+	glBegin(GL_LINE);
+	glVertex3f(14.0f, 45.0f, 148.0f);
+	glVertex3f(216.0f, 52.0f, 237.0f);
+	glEnd();
+	//glDrawPixels(W, H, GL_RGB, GL_UNSIGNED_INT, data);
+
 	// Draw 36 SnowMen
-	for (int i = -3; i < 3; i++)
+	/*for (int i = -3; i < 3; i++)
 		for (int j = -3; j < 3; j++) {
 			glPushMatrix();
-			glTranslatef(i * 10.0, 0, j * 10.0);
+			glTranslated(i * 10.0, 0, j * 10.0);
 			drawSnowMan();
 			glPopMatrix();
-		}
-
+		}*/
+	fpsPrint();
 	glutSwapBuffers();
-}
-
-//==========================================================================
-void printText(double x, double y, double z, const char* str, std::string font = "8BY13")
-{
-	glRasterPos3d(x, y, z);
-	std::for_each(font.begin(), font.end(), [](char& c) {
-		c = ::toupper(c);
-	});
-	glutBitmapString(fontMap[font], reinterpret_cast<const unsigned char*>(str));
 }
 
 //==========================================================================
@@ -119,8 +190,8 @@ void changeSize(int w, int h) {
 }
 
 int main(int argc, char** argv) {
-	double speed = 0.1;
-	double angleSpeed = 0.005;
+	double speed = 0.5;
+	double angleSpeed = 0.05;
 	bool movex = false, movex_ = false, movez = false, movez_ = false;
 	bool moveup = false, movedown = false, moveright = false, moveleft = false;
 	Scene::getInstance().subscribeCallBack([&]() -> void {
@@ -184,9 +255,9 @@ int main(int argc, char** argv) {
 			exit(0);
 		});
 	
-	// init GLUT and create window
 	MainCamera.tfm.position = Point3d(0, 1, 2);
 
+	// init GLUT and create window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 20);
