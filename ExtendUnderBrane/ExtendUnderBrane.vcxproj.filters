@@ -37,84 +37,96 @@
     <Filter Include="Source Files\Common\UserEventSystem">
       <UniqueIdentifier>{9dec23e2-dcab-47ae-84f4-812e09b85db3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Common\Scene">
-      <UniqueIdentifier>{fb62fd1e-ce87-475e-a688-9900d433d21c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Scene">
       <UniqueIdentifier>{7e300348-d88e-4cca-8ba0-e41f988aad84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scene">
+      <UniqueIdentifier>{fb62fd1e-ce87-475e-a688-9900d433d21c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Vector3d.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Point3d.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Curve.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Source Files\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UserEventSystem.cpp">
-      <Filter>Source Files\Common\UserEventSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="EventVector.cpp">
-      <Filter>Source Files\Common\UserEventSystem</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Cube.cpp">
+    <ClCompile Include="sources\TextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Camera.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Transform.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Scene.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\SceneObject.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\EventVector.cpp">
+      <Filter>Source Files\Common\UserEventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Cube.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source Files\Scene</Filter>
+    <ClCompile Include="sources\Curve.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="SceneObject.cpp">
-      <Filter>Source Files\Scene</Filter>
+    <ClCompile Include="sources\Point3d.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Interval.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\UserEventSystem.cpp">
+      <Filter>Source Files\Common\UserEventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vector3d.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Vector3d.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Point3d.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Curve.h">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Header Files\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="EventVector.h">
-      <Filter>Header Files\Common\UserEventSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="UserEventSystem.h">
-      <Filter>Header Files\Common\UserEventSystem</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Cube.h">
+    <ClInclude Include="headers\TextureManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Scene.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\SceneObject.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\UserEventSystem.h">
+      <Filter>Header Files\Common\UserEventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\EventVector.h">
+      <Filter>Header Files\Common\UserEventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Camera.h">
+      <Filter>Header Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Transform.h">
+      <Filter>Header Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Cube.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Header Files\Common\Scene</Filter>
+    <ClInclude Include="headers\Curve.h">
+      <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="SceneObject.h">
-      <Filter>Header Files\Common\Scene</Filter>
+    <ClInclude Include="headers\Point3d.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Vector3d.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Interval.h">
+      <Filter>Header Files\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -94,7 +94,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\freeglut\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -130,42 +130,46 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\freeglut\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Cube.cpp" />
-    <ClCompile Include="Curve.cpp" />
-    <ClCompile Include="EventVector.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Point3d.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="UserEventSystem.cpp" />
-    <ClCompile Include="Vector3d.cpp" />
+    <ClCompile Include="sources\Camera.cpp" />
+    <ClCompile Include="sources\Cube.cpp" />
+    <ClCompile Include="sources\Curve.cpp" />
+    <ClCompile Include="sources\EventVector.cpp" />
+    <ClCompile Include="sources\Interval.cpp" />
+    <ClCompile Include="sources\Point3d.cpp" />
+    <ClCompile Include="sources\Scene.cpp" />
+    <ClCompile Include="sources\SceneObject.cpp" />
+    <ClCompile Include="sources\TextureManager.cpp" />
+    <ClCompile Include="sources\Transform.cpp" />
+    <ClCompile Include="sources\UserEventSystem.cpp" />
+    <ClCompile Include="sources\Vector3d.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Cube.h" />
-    <ClInclude Include="Curve.h" />
-    <ClInclude Include="EventVector.h" />
+    <ClInclude Include="headers\Camera.h" />
+    <ClInclude Include="headers\Cube.h" />
+    <ClInclude Include="headers\Curve.h" />
+    <ClInclude Include="headers\EventVector.h" />
+    <ClInclude Include="headers\Interval.h" />
+    <ClInclude Include="headers\Point3d.h" />
+    <ClInclude Include="headers\Scene.h" />
+    <ClInclude Include="headers\SceneObject.h" />
+    <ClInclude Include="headers\TextureManager.h" />
+    <ClInclude Include="headers\Transform.h" />
+    <ClInclude Include="headers\UserEventSystem.h" />
+    <ClInclude Include="headers\Vector3d.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Point3d.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneObject.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="UserEventSystem.h" />
-    <ClInclude Include="Vector3d.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

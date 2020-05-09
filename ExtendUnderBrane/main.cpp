@@ -1,20 +1,36 @@
 #include "pch.h"
-#include "Curve.h"
-#include "Scene.h"
-#include "Camera.h"
-#include "Cube.h"
+#include "headers/Curve.h"
+#include "headers/Scene.h"
+#include "headers/Camera.h"
+#include "headers/Cube.h"
+#include "headers/TextureManager.h"
 
+#define ESCAPE 27
+
+const unsigned int amount_textures = 2;
+unsigned int textures[amount_textures] = { 0, 1 };
 //==========================================================================
+// define global variable
 Camera Camera::instance;
 #define MainCamera Camera::getInstance()
 
 Scene Scene::instance;
 UserEventSystem UserEventSystem::instance;
 
+// for window
 int WIDTH = 1200, HEIGHT = 800;
 bool fullscreen = false;
+// speed of a camera
+const float SPEED_MOVEMENT =  0.05f * 2;
+const float SPEED_ROTATE =    0.005f * 2;
+
+// for fps counter
+int frames = 0;
+unsigned long long curr_time = 0, timebase = 0, deltaTime = 0;
+std::string str_fps;
 
 //==========================================================================
+// set of standart fonts
 static std::map<std::string, void*> fontMap = {
 	{ "8BY13" , GLUT_BITMAP_8_BY_13},
 	{ "9BY15" , GLUT_BITMAP_9_BY_15},
@@ -46,37 +62,6 @@ void print3dText(double x, double y, double z, const char* str, std::string font
 }
 
 //==========================================================================
-void drawSnowMan() {
-
-	glColor3f(1.0f, 1.0f, 1.0f);
-
-	// Draw Body
-	glTranslatef(0.0f, 0.75f, 0.0f);
-	glutSolidSphere(0.75f, 20, 20);
-
-	// Draw Head
-	glTranslatef(0.0f, 1.0f, 0.0f);
-	glutSolidSphere(0.25f, 20, 20);
-
-	// Draw Eyes
-	glPushMatrix();
-	glColor3f(0.0f, 0.0f, 0.0f);
-	glTranslatef(0.05f, 0.10f, 0.18f);
-	glutSolidSphere(0.05f, 10, 10);
-	glTranslatef(-0.1f, 0.0f, 0.0f);
-	glutSolidSphere(0.05f, 10, 10);
-	glPopMatrix();
-
-	// Draw Nose
-	glColor3f(1.0f, 0.5f, 0.5f);
-	glutSolidCone(0.08f, 0.5f, 10, 2);
-}
-
-int frame = 0;
-unsigned long long time = 0, timebase = 0;
-std::string str_fps;
-
-//==========================================================================
 void fpsPrint()
 {
 	glDisable(GL_DEPTH_TEST);
@@ -84,26 +69,30 @@ void fpsPrint()
 	print2dText(0, 0, str_fps.c_str(), "roman24");
 	glEnable(GL_DEPTH_TEST);
 }
+
 //==========================================================================
 std::string fps_counter()
 {
 	str_fps.clear();
-	int fps = frame * 1000.0 / double(time - timebase);
+	float framesPerSecond = 1000.0f / float(frames);
+	int fps = frames;
 	str_fps += "fps: " + std::to_string(fps);
-	timebase = time;
-	frame = 0;
-	printf("%s\n", str_fps.c_str());
+	timebase = curr_time;
+	frames = 0;
+	printf("%s, frames per second(ms) %f, deltaTime:%lli\n", str_fps.c_str(), framesPerSecond, deltaTime);
 	return str_fps;
 }
 
+constexpr float step = 9.0f / 255.0f;
 //==========================================================================
 void display() {
 	// Clear Color and Depth Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	frame++;
-	time = glutGet(GLUT_ELAPSED_TIME);
-	if (time - timebase > 1000)
+	frames++;
+	curr_time = glutGet(GLUT_ELAPSED_TIME);
+	deltaTime = curr_time - timebase;
+	if (deltaTime >= 1000)
 		str_fps = fps_counter();
 
 	// Reset transformations
@@ -112,55 +101,34 @@ void display() {
 	MainCamera.update();
 	Scene::getInstance().render();
 
+	glEnable(GL_TEXTURE_2D);
+	TextureManager::Inst()->BindTexture(textures[0]);
+	//glBindTexture(GL_TEXTURE_2D, textures[0]);
 	// Draw ground
-	glColor3f(0.9f, 0.9f, 0.9f);
+	glColor3f(0.7f, 0.7f, 0.7f);
 	glBegin(GL_QUADS);			//plane
-		glVertex3f(-1000.0f, 0.0f, -1000.0f);
-		glVertex3f(-1000.0f, 0.0f, 1000.0f);
-		glVertex3f(1000.0f, 0.0f, 1000.0f);
-		glVertex3f(1000.0f, 0.0f, -1000.0f);
+		glTexCoord2i(0, 0); glVertex3f(-100.0f, 0.0f, -100.0f);
+		glTexCoord2i(0, 1); glVertex3f(-100.0f, 0.0f, 100.0f);
+		glTexCoord2i(1, 1); glVertex3f(100.0f, 0.0f, 100.0f);
+		glTexCoord2i(1, 0); glVertex3f(100.0f, 0.0f, -100.0f);
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 
-
-	int x0 = 0, y0 = 0, z0 = 0, r = 100;
-	const int W = 255, H = 255, Z = 255;
-	const int step = 10;
-
-	//unsigned int data[H][W][Z];
-
-	for (int red = 0; red < W; red += step)
+	for (float red = 0; red < 1; red += step)
 	{
-		for (int green = 0; green < H; green += step)
+		for (float green = 0; green < 1; green += step)
 		{
-			for (int blue = 0; blue < Z; blue += step)
+			for (float blue = 0; blue < 1; blue += step)
 			{
-				glPointSize(5);
-				glColor3f(red / 255.0, green / 255.0, blue / 255.0);
+				glPointSize(6);
 				glBegin(GL_POINTS);
-				glVertex3f(red / 20.0, green / 20.0, blue / 20.0);
+					glColor3f(red, green, blue);
+					glVertex3f(red * 20.0f, green * 20.0f + 5, blue * 20.0f);
 				glEnd();
-				//GL_QUADS / GL_LINE_STRIP
-				//data[red][green][blue] = red * green * blue;
 			}
 		}
 	}
 
-	glLineWidth(50);
-	glColor3f(0, 0, 0);
-	glBegin(GL_LINE);
-	glVertex3f(14.0f, 45.0f, 148.0f);
-	glVertex3f(216.0f, 52.0f, 237.0f);
-	glEnd();
-	//glDrawPixels(W, H, GL_RGB, GL_UNSIGNED_INT, data);
-
-	// Draw 36 SnowMen
-	/*for (int i = -3; i < 3; i++)
-		for (int j = -3; j < 3; j++) {
-			glPushMatrix();
-			glTranslated(i * 10.0, 0, j * 10.0);
-			drawSnowMan();
-			glPopMatrix();
-		}*/
 	fpsPrint();
 	glutSwapBuffers();
 }
@@ -171,7 +139,7 @@ void changeSize(int w, int h) {
 	// (you cant make a window of zero width).
 	if (h == 0)
 		h = 1;
-	float ratio = w * 1.0 / h;
+	float ratio = w * 1.0f / h;
 
 	// Use the Projection Matrix
 	glMatrixMode(GL_PROJECTION);
@@ -189,12 +157,28 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+//==========================================================================
 int main(int argc, char** argv) {
-	double speed = 0.5;
-	double angleSpeed = 0.05;
+	float speed = SPEED_MOVEMENT;
+	float angleSpeed = SPEED_ROTATE;
 	bool movex = false, movex_ = false, movez = false, movez_ = false;
 	bool moveup = false, movedown = false, moveright = false, moveleft = false;
+	float pos[4] = { 3,3,3,1 };
+	float dir[3] = { -1,-1,-1 };
+
+	TextureManager::Inst()->LoadTexture("../../textures/snow.jpeg", textures[0]);
+
 	Scene::getInstance().subscribeCallBack([&]() -> void {
+		/*if (movex | movex_ | movez | movez_ | moveup | movedown | moveright | moveleft)
+		{
+			speed = SPEED_MOVEMENT * deltaTime / 1000.0f;
+			angleSpeed = SPEED_ROTATE * deltaTime / 1000.0f;
+		}
+		else
+		{
+			speed = SPEED_MOVEMENT;
+			angleSpeed = SPEED_ROTATE;
+		}*/
 		if (movez)
 			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(0, 0, speed);
 		if (movex_)
@@ -230,7 +214,7 @@ int main(int argc, char** argv) {
 			moveup = false;
 		if (key == 'f')
 			movedown = false;
-		if (key == 27)
+		if (key == ESCAPE)
 			exit(0);
 		});
 
@@ -251,11 +235,11 @@ int main(int argc, char** argv) {
 			moveup = true;
 		if (key == 'f')
 			movedown = true;
-		if (key == 27)
+		if (key == ESCAPE)
 			exit(0);
 		});
 	
-	MainCamera.tfm.position = Point3d(0, 1, 2);
+	MainCamera.tfm.position = Point3d(5, 10, -50);
 
 	// init GLUT and create window
 	glutInit(&argc, argv);
@@ -272,6 +256,19 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(changeSize);
 	glutIdleFunc(display);
 
+	// OpenGL init
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+	// освещение (надо поиграться с ним чтобы нормально настроить)
+	glLightfv(GL_LIGHT0, GL_POSITION, pos);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);
+
 	glutKeyboardFunc([](unsigned char c, int x, int y) {
 		UserEventSystem::getInstance().keyboard_event(c, x, y);
 		});
@@ -280,78 +277,10 @@ int main(int argc, char** argv) {
 		UserEventSystem::getInstance().keyboard_event_up(c, x, y);
 		});
 
-	// OpenGL init
-	glEnable(GL_DEPTH_TEST);
-
 	// enter GLUT event processing cycle
 	glutMainLoop();
 
+	TextureManager::Inst()->UnloadAllTextures();
+
 	return 1;
 }
-
-//==========================================================================
-/*int main(int argc, char ** argv) {
-	glutInit(&argc, argv);
-
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(WIDTH, HEIGHT);
-	glutInitWindowPosition(100, 20);
-	glutCreateWindow("SimplePlot");
-
-	int frame = 0, fps = 0;
-	unsigned long long time = 0, timebase = 0;
-	std::string str_fps;
-
-	double angle = 0;
-	Curve one([](double x)->double {return x * x; }, { -2, 2 });
-	Curve two([](double x)->double {return std::sin(x); }, { -2, 2 });
-	Cube cube;
-	Scene::getInstance() += one;
-	Scene::getInstance() += cube;
-	Scene::getInstance() += two;
-
-
-	std::function<void(void)> eachFrame = [&]()->void
-	{
-		frame++;
-		time = glutGet(GLUT_ELAPSED_TIME);
-		if (time - timebase > 1000) {
-			str_fps.clear();
-			fps = frame * 1000.0 / double(time - timebase);
-			str_fps += "fps: " + std::to_string(fps);
-			timebase = time;
-			frame = 0;
-		}
-
-		angle += 0.1;
-		one.transform.setRotation(angle, Vector3d(1, 0, 0));
-		two.transform.setRotation(angle, Vector3d(0, 1, 0));
-		cube.transform.setRotation(angle, Vector3d(0, 1, 0));
-
-		// по топу: хер знает как поместить автоматически в край угла, он сдвигает его после изменения glOrtho констант
-		printText(glOleft, glOtop - 2, 0, str_fps.c_str(), "roman24");	
-	};
-
-	Scene::getInstance().subscribeCallBack(eachFrame);
-	std::function<void(MouseWheelDirection,int,int)> func = [](MouseWheelDirection dir, int x, int y)
-	{	
-		printf("%s, %d, %d\n", dir == MouseWheelDirection::UP ? "UP" : "DOWN", x, y);
-	};
-	
-	UserEventSystem::getInstance().onMouseWheel.subscribe(func);
-	
-	glutDisplayFunc(display);
-	glutMouseWheelFunc([](int button, int dir, int x, int y)
-		{
-			UserEventSystem::getInstance().mousewhell_event(button, dir, x, y);
-		});
-	glutKeyboardFunc([](unsigned char c, int x, int y)
-		{
-			UserEventSystem::getInstance().keyboard_event(c, x, y);
-		});
-	glutIdleFunc(display);
-	Initialize();
-
-	glutMainLoop();
-	return 0;
-}*/
