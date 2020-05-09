@@ -83,8 +83,8 @@ std::string fps_counter()
 	return str_fps;
 }
 
-constexpr float step = 9.0f / 255.0f;
 //==========================================================================
+constexpr float step = 9.0f / 255.0f;
 void display() {
 	// Clear Color and Depth Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -103,7 +103,6 @@ void display() {
 
 	glEnable(GL_TEXTURE_2D);
 	TextureManager::Inst()->BindTexture(textures[0]);
-	//glBindTexture(GL_TEXTURE_2D, textures[0]);
 	// Draw ground
 	glColor3f(0.7f, 0.7f, 0.7f);
 	glBegin(GL_QUADS);			//plane
@@ -129,7 +128,20 @@ void display() {
 		}
 	}
 
+	// yellow sphere
+	glPushMatrix();
+		GLUquadricObj* quadObj = gluNewQuadric();
+		glColor3f(1.f, 1.f, 0.f);
+		gluQuadricDrawStyle(quadObj, GLU_FILL);
+		GLfloat color[] = { 1,1,1,0 };
+		glMaterialfv(GL_LIGHT0, GL_POSITION, color);
+		glTranslatef(10.0f, 60.0f, 10.0f);
+		gluSphere(quadObj, 10, 100, 100); 
+	glPopMatrix();
+	gluDeleteQuadric(quadObj);
+
 	fpsPrint();
+
 	glutSwapBuffers();
 }
 
@@ -143,6 +155,8 @@ void changeSize(int w, int h) {
 
 	// Use the Projection Matrix
 	glMatrixMode(GL_PROJECTION);
+
+	UserEventSystem::initialize();
 
 	// Reset Matrix
 	glLoadIdentity();
@@ -163,22 +177,13 @@ int main(int argc, char** argv) {
 	float angleSpeed = SPEED_ROTATE;
 	bool movex = false, movex_ = false, movez = false, movez_ = false;
 	bool moveup = false, movedown = false, moveright = false, moveleft = false;
-	float pos[4] = { 3,3,3,1 };
-	float dir[3] = { -1,-1,-1 };
+
+	float pos[4] = { 10.0f, 10.0f, 10.0f, 1.f };		// для освещения скопировано
+	float dir[3] = { 0.f, -1.f, 0.f };	// скопировано, надо тестить как работает
 
 	TextureManager::Inst()->LoadTexture("../../textures/snow.jpeg", textures[0]);
 
 	Scene::getInstance().subscribeCallBack([&]() -> void {
-		/*if (movex | movex_ | movez | movez_ | moveup | movedown | moveright | moveleft)
-		{
-			speed = SPEED_MOVEMENT * deltaTime / 1000.0f;
-			angleSpeed = SPEED_ROTATE * deltaTime / 1000.0f;
-		}
-		else
-		{
-			speed = SPEED_MOVEMENT;
-			angleSpeed = SPEED_ROTATE;
-		}*/
 		if (movez)
 			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(0, 0, speed);
 		if (movex_)
@@ -197,48 +202,6 @@ int main(int argc, char** argv) {
 			MainCamera.tfm.rotateBy(-angleSpeed, Vector3d(1, 0, 0));
 		});
 
-	UserEventSystem::getInstance().onKeyUp.subscribe([&](unsigned char key, int x, int y) -> void {
-		if (key == 'w')
-			movez = false;
-		if (key == 'a')
-			movex_ = false;
-		if (key == 's')
-			movez_ = false;
-		if (key == 'd')
-			movex = false;
-		if (key == 'q')
-			moveleft = false;
-		if (key == 'e')
-			moveright = false;
-		if (key == 'r')
-			moveup = false;
-		if (key == 'f')
-			movedown = false;
-		if (key == ESCAPE)
-			exit(0);
-		});
-
-	UserEventSystem::getInstance().onKeyPress.subscribe([&](unsigned char key, int x, int y) -> void {
-		if (key == 'w')
-			movez = true;
-		if (key == 'a')
-			movex_ = true;
-		if (key == 's')
-			movez_ = true;
-		if (key == 'd')
-			movex = true;
-		if (key == 'q')
-			moveleft = true;
-		if (key == 'e')
-			moveright = true;
-		if (key == 'r')
-			moveup = true;
-		if (key == 'f')
-			movedown = true;
-		if (key == ESCAPE)
-			exit(0);
-		});
-	
 	MainCamera.tfm.position = Point3d(5, 10, -50);
 
 	// init GLUT and create window
@@ -264,23 +227,74 @@ int main(int argc, char** argv) {
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
 	// освещение (надо поиграться с ним чтобы нормально настроить)
 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
 	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);
 
-	glutKeyboardFunc([](unsigned char c, int x, int y) {
-		UserEventSystem::getInstance().keyboard_event(c, x, y);
-		});
+	std::function<void(unsigned char, int, int)> key_press = [&](unsigned char key, int x, int y)
+	{
+		printf("%c, %d, %d\n", key, x, y);
+		if (key == 'w')
+			movez = true;
+		if (key == 'a')
+			movex_ = true;
+		if (key == 's')
+			movez_ = true;
+		if (key == 'd')
+			movex = true;
+		if (key == 'q')
+			moveleft = true;
+		if (key == 'e')
+			moveright = true;
+		if (key == 'r')
+			moveup = true;
+		if (key == 'f')
+			movedown = true;
+		if (key == ESCAPE)
+			exit(0);
+	};
+	UserEventSystem::getInstance().onKeyPress.subscribe(key_press);
 
-	glutKeyboardUpFunc([](unsigned char c, int x, int y) {
-		UserEventSystem::getInstance().keyboard_event_up(c, x, y);
-		});
+	std::function<void(unsigned char, int, int)> key_up = [&](unsigned char key, int x, int y)
+	{
+		printf("%c, %d, %d\n", key, x, y);
+		if (key == 'w')
+			movez = false;
+		if (key == 'a')
+			movex_ = false;
+		if (key == 's')
+			movez_ = false;
+		if (key == 'd')
+			movex = false;
+		if (key == 'q')
+			moveleft = false;
+		if (key == 'e')
+			moveright = false;
+		if (key == 'r')
+			moveup = false;
+		if (key == 'f')
+			movedown = false;
+		if (key == ESCAPE)
+			exit(0);
+	};
+	UserEventSystem::getInstance().onKeyUp.subscribe(key_up);
 
-	// enter GLUT event processing cycle
+	std::function<void(MouseWheelDirection,int,int)> mouse_wheel = [](MouseWheelDirection dir, int x, int y)
+	{
+		printf("%s, %d, %d\n", dir == MouseWheelDirection::UP ? "UP" : "DOWN", x, y);
+	};
+	UserEventSystem::getInstance().onMouseWheel.subscribe(mouse_wheel);
+	
+	std::function<void( int, int)> mouse_move = [](int x, int y)
+	{
+		printf("%d %d\n", x,y);
+	};
+	UserEventSystem::getInstance().onMouseMove.subscribe(mouse_move);
+	
 	glutMainLoop();
 
 	TextureManager::Inst()->UnloadAllTextures();
-
 	return 1;
 }
