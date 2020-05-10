@@ -269,9 +269,6 @@ int main(int argc, char** argv) {
 	if(FULLSCREEN)
 		glutFullScreen();
 	glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);	// ставит отображение курсора: перекрестие
-	/*RECT rect;
-	SetRect(&rect, 0, 0, WIDTH, HEIGHT);
-	ClipCursor(&rect);*/
 
 	// register callbacks
 	glutDisplayFunc(display);
@@ -354,23 +351,24 @@ int main(int argc, char** argv) {
 			FOV = 60.0f;
 
 		changeSize(WIDTH, HEIGHT);
-
 	};
 	UserEventSystem::getInstance().onMouseWheel.subscribe(mouse_wheel);
 	
+	POINT pointCursor;
+	GetCursorPos(&pointCursor);
 	std::function<void(int, int)> mouse_move = [&](int x, int y)
 	{
-		printf("%d %d\n", x, y);
+		printf("%d %d\n", pointCursor.x, pointCursor.y);
 		if (firstMouse)
 		{
-			prev_mouse_x = x;
-			prev_mouse_y = y;
+			prev_mouse_x = pointCursor.x;
+			prev_mouse_y = pointCursor.y;
 			firstMouse = false;
 		}
-		GLfloat xOffset = x - prev_mouse_x;
-		GLfloat yOffset = prev_mouse_y - y;
-		prev_mouse_x = x;
-		prev_mouse_y = y;
+		GLfloat xOffset = pointCursor.x - prev_mouse_x;
+		GLfloat yOffset = prev_mouse_y - pointCursor.y;
+		prev_mouse_x = pointCursor.x;
+		prev_mouse_y = pointCursor.y;
 
 		xOffset *= SENSITIVITY;
 		yOffset *= SENSITIVITY;
