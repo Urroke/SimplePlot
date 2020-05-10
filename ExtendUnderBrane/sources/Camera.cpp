@@ -13,13 +13,11 @@ Camera& Camera::operator=(Camera const&)
 void Camera::lookAt(const Point3d& position, const Point3d& target, const Vector3d& refAxis)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glLoadIdentity();
 
 	gluLookAt (	position.x, position.y, position.z,
 				target.x,	target.y,	target.z,
 				refAxis.x,	refAxis.y,	refAxis.z);
 	glutPostRedisplay();
-	//glutSwapBuffers();
 }
 
 void Camera::update()

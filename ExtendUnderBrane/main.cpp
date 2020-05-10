@@ -19,15 +19,17 @@ UserEventSystem UserEventSystem::instance;
 
 // for window
 int WIDTH = 1200, HEIGHT = 800;
-bool fullscreen = false;
+bool FULLSCREEN = false;
+float FOV = 60.0F;	// for perspective
 // speed of a camera
 const float SPEED_MOVEMENT =  0.05f * 2;
 const float SPEED_ROTATE =    0.005f * 2;
+const float SENSITIVITY = 0.001f;
 
 // for fps counter
-int frames = 0;
-unsigned long long curr_time = 0, timebase = 0, deltaTime = 0;
-std::string str_fps;
+int FRAMES = 0;
+unsigned long long CURR_TIME = 0, LAST_TIME = 0, DELTA_TIME = 0;
+std::string STR_FPS;
 
 //==========================================================================
 // set of standart fonts
@@ -101,7 +103,7 @@ void drawAxis()
 	glEnd();
 
 	// name of direction (axis)255, 135, 50
-	glColor3f(0.01, 0.01, 1);
+	glColor3f(0.01f, 0.01f, 1.0f);
 	print3dText(5, 0, 0.2, "X");
 	print3dText(0.2, 5, 0, "Y");
 	print3dText(0.2, 0, 5, "Z");
@@ -114,21 +116,21 @@ void fpsPrint()
 {
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(0.0f, 0.6f, 0.0f);
-	print2dText(0, 0, str_fps.c_str());
+	print2dText(0, 0, STR_FPS.c_str());
 	glEnable(GL_DEPTH_TEST);
 }
 
 //==========================================================================
 std::string fps_counter()
 {
-	str_fps.clear();
-	float framesPerSecond = 1000.0f / float(frames);
-	int fps = frames;
-	str_fps += "fps: " + std::to_string(fps);
-	timebase = curr_time;
-	frames = 0;
-	printf("%s, frames per second(ms) %f, deltaTime:%lli\n", str_fps.c_str(), framesPerSecond, deltaTime);
-	return str_fps;
+	STR_FPS.clear();
+	float framesPerSecond = 1000.0f / float(FRAMES);
+	int fps = FRAMES;
+	STR_FPS += "fps: " + std::to_string(fps);
+	LAST_TIME = CURR_TIME;
+	FRAMES = 0;
+	printf("%s, FRAMES per second(ms) %f, DELTA_TIME:%lli\n", STR_FPS.c_str(), framesPerSecond, DELTA_TIME);
+	return STR_FPS;
 }
 
 //==========================================================================
@@ -137,11 +139,11 @@ void display() {
 	// Clear Color and Depth Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	frames++;
-	curr_time = glutGet(GLUT_ELAPSED_TIME);
-	deltaTime = curr_time - timebase;
-	if (deltaTime >= 1000)
-		str_fps = fps_counter();
+	FRAMES++;
+	CURR_TIME = glutGet(GLUT_ELAPSED_TIME);
+	DELTA_TIME = CURR_TIME - LAST_TIME;
+	if (DELTA_TIME >= 1000)
+		STR_FPS = fps_counter();
 
 	// Reset transformations
 	glLoadIdentity();
@@ -196,11 +198,12 @@ void display() {
 
 //==========================================================================
 void changeSize(int w, int h) {
-	// Prevent a divide by zero, when window is too short
-	// (you cant make a window of zero width).
-	if (h == 0)
-		h = 1;
-	float ratio = w * 1.0f / h;
+	WIDTH = w;
+	HEIGHT = h;
+
+	if (HEIGHT == 0)
+		HEIGHT = 1;
+	float ratio = WIDTH * 1.0f / HEIGHT;
 
 	// Use the Projection Matrix
 	glMatrixMode(GL_PROJECTION);
@@ -211,10 +214,10 @@ void changeSize(int w, int h) {
 	glLoadIdentity();
 
 	// Set the viewport to be the entire window
-	glViewport(0, 0, w, h);
+	glViewport(0, 0, WIDTH, HEIGHT);
 
 	// Set the correct perspective.
-	gluPerspective(45.0f, ratio, 0.1f, 100.0f);
+	gluPerspective(FOV, ratio, 0.1f, 250.0f);
 
 	// Get Back to the Modelview
 	glMatrixMode(GL_MODELVIEW);
@@ -226,9 +229,11 @@ int main(int argc, char** argv) {
 	float angleSpeed = SPEED_ROTATE;
 	bool movex = false, movex_ = false, movez = false, movez_ = false;
 	bool moveup = false, movedown = false, moveright = false, moveleft = false;
+	bool firstMouse = true;
+	int prev_mouse_x = 0, prev_mouse_y = 0;
 
-	float pos[4] = { 10.0f, 10.0f, 10.0f, 1.f };		// для освещения скопировано
-	float dir[3] = { 0.f, -1.f, 0.f };	// скопировано, надо тестить как работает
+	//float pos[4] = { 10.0f, 10.0f, 10.0f, 1.f };		// для освещения скопировано
+	//float dir[3] = { 0.f, -1.f, 0.f };	// скопировано, надо тестить как работает
 
 	TextureManager::Inst()->LoadTexture("../../textures/snow.jpeg", textures[0]);
 
@@ -250,6 +255,7 @@ int main(int argc, char** argv) {
 		if (movedown)
 			MainCamera.tfm.rotateBy(-angleSpeed, Vector3d(1, 0, 0));
 		});
+	TextureManager::Inst()->UnloadAllTextures();
 
 	MainCamera.tfm.position = Point3d(5, 10, -50);
 
@@ -260,8 +266,12 @@ int main(int argc, char** argv) {
 	glutInitWindowSize(WIDTH, HEIGHT);
 	glutCreateWindow("SimplePlot");
 
-	if(fullscreen)
+	if(FULLSCREEN)
 		glutFullScreen();
+	glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);	// ставит отображение курсора: перекрестие
+	/*RECT rect;
+	SetRect(&rect, 0, 0, WIDTH, HEIGHT);
+	ClipCursor(&rect);*/
 
 	// register callbacks
 	glutDisplayFunc(display);
@@ -330,20 +340,46 @@ int main(int argc, char** argv) {
 	};
 	UserEventSystem::getInstance().onKeyUp.subscribe(key_up);
 
-	std::function<void(MouseWheelDirection,int,int)> mouse_wheel = [](MouseWheelDirection dir, int x, int y)
+	std::function<void(MouseWheelDirection,int,int)> mouse_wheel = [&](MouseWheelDirection dir, int x, int y)
 	{
 		printf("%s, %d, %d\n", dir == MouseWheelDirection::UP ? "UP" : "DOWN", x, y);
+		if (FOV >= 1.0f && FOV <= 60.0f)
+		{
+			char sign = (dir == MouseWheelDirection::UP ? 1 : -1);
+			FOV -= 5 * sign;
+		}
+		if (FOV < 1.0f)
+			FOV = 1.0f;
+		if (FOV > 60.0f)
+			FOV = 60.0f;
+
+		changeSize(WIDTH, HEIGHT);
+
 	};
 	UserEventSystem::getInstance().onMouseWheel.subscribe(mouse_wheel);
 	
-	std::function<void( int, int)> mouse_move = [](int x, int y)
+	std::function<void(int, int)> mouse_move = [&](int x, int y)
 	{
-		printf("%d %d\n", x,y);
+		printf("%d %d\n", x, y);
+		if (firstMouse)
+		{
+			prev_mouse_x = x;
+			prev_mouse_y = y;
+			firstMouse = false;
+		}
+		GLfloat xOffset = x - prev_mouse_x;
+		GLfloat yOffset = prev_mouse_y - y;
+		prev_mouse_x = x;
+		prev_mouse_y = y;
+
+		xOffset *= SENSITIVITY;
+		yOffset *= SENSITIVITY;
+		MainCamera.tfm.rotateBy(xOffset, Vector3d(0, 1, 0));
+		MainCamera.tfm.rotateBy(yOffset, Vector3d(1, 0, 0));
 	};
 	UserEventSystem::getInstance().onMouseMove.subscribe(mouse_move);
-	
+
 	glutMainLoop();
 
-	TextureManager::Inst()->UnloadAllTextures();
 	return 1;
 }

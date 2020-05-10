@@ -33,12 +33,12 @@ Matrix operator*(const Matrix& mat1, const Matrix& mat2)
 	return res;
 }
 
-Point3d operator*(const Matrix& matrix, const Point3d& vec)
+Point3d operator*(const Matrix& matrix, const Point3d& point)
 {
 	Point3d res;
-	res.x = matrix[0][0] * vec.x + matrix[0][1] * vec.y + matrix[0][2] * vec.z;
-	res.y = matrix[1][0] * vec.x + matrix[1][1] * vec.y + matrix[1][2] * vec.z;
-	res.z = matrix[2][0] * vec.x + matrix[2][1] * vec.y + matrix[2][2] * vec.z;
+	res.x = matrix[0][0] * point.x + matrix[0][1] * point.y + matrix[0][2] * point.z;
+	res.y = matrix[1][0] * point.x + matrix[1][1] * point.y + matrix[1][2] * point.z;
+	res.z = matrix[2][0] * point.x + matrix[2][1] * point.y + matrix[2][2] * point.z;
 	return res;
 }
 
@@ -48,22 +48,27 @@ Transform::Transform(const Point3d& position, const Matrix& rotation, double sca
 	this->rotation = rotation;
 	this->scale = scale;
 }
+
 void Transform::setScale(double scale)
 {
 	this->scale = scale;
 }
+
 void Transform::scaleTo(double mult)
 {
 	scale *= mult;
 }
+
 void Transform::translateTo(const Vector3d& vec)
 {
 	position += vec;
 }
+
 void Transform::setPosition(const Point3d& position)
 {
 	this->position = position;
 }
+
 void Transform::setRotation(double a, const Vector3d& vec)
 {
 	Vector3d d = vec.normal();
@@ -105,4 +110,3 @@ Matrix Transform::getRotation(double a, const Vector3d& vec)
 	rotate[2][2] = cosa + d.z * d.z * cosa1;
 	return rotate;
 }
-

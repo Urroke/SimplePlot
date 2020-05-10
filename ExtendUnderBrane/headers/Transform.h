@@ -10,6 +10,7 @@ struct Transform
 	Point3d position;
 	Matrix rotation;
 	double scale;
+
 	Transform();
 	Transform(const Point3d&, const Matrix&, double);
 	void setScale(double);
@@ -23,4 +24,4 @@ struct Transform
 
 Vector3d operator*(const Matrix& matrix, const Vector3d& vec);
 
-Point3d operator*(const Matrix& matrix, const Point3d& vec);
+Point3d operator*(const Matrix& matrix, const Point3d& pnt);
