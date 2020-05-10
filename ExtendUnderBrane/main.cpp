@@ -42,7 +42,7 @@ static std::map<std::string, void*> fontMap = {
 };
 
 //==========================================================================
-void print2dText(double x, double y, const char* str, std::string font = "8BY13")
+void print2dText(double x, double y, const char* str, std::string font = "ROMAN24")
 {
 	glRasterPos2d(x, y);
 	std::for_each(font.begin(), font.end(), [](char& c) {
@@ -52,7 +52,7 @@ void print2dText(double x, double y, const char* str, std::string font = "8BY13"
 }
 
 //==========================================================================
-void print3dText(double x, double y, double z, const char* str, std::string font = "8BY13")
+void print3dText(double x, double y, double z, const char* str, std::string font = "ROMAN24")
 {
 	glRasterPos3d(x, y, z);
 	std::for_each(font.begin(), font.end(), [](char& c) {
@@ -62,11 +62,59 @@ void print3dText(double x, double y, double z, const char* str, std::string font
 }
 
 //==========================================================================
+void drawAxis()
+{
+	glDisable(GL_DEPTH_TEST);
+
+	// draw axis
+	glLineWidth(3);
+	glBegin(GL_LINES);
+		glColor3f(1, 0, 0);
+		glVertex3i(0, 0, 0);
+		glVertex3i(5, 0, 0); // x
+
+		glColor3f(0, 1, 0);
+		glVertex3i(0, 0, 0);
+		glVertex3i(0, 5, 0);  // y
+
+		glColor3f(0, 0, 1);
+		glVertex3i(0, 0, 0);
+		glVertex3i(0, 0, 5);  // z
+	glEnd();
+
+	// draw direction triangles
+	glBegin(GL_TRIANGLES);
+		glColor3f(1, 0, 0);
+		glVertex3i(5, 0, 0);		// x
+		glVertex3f(4.5f, 0, -0.15f);
+		glVertex3f(4.5f, 0, 0.15f);
+		
+		glColor3f(0, 1, 0);
+		glVertex3i(0, 5, 0);		// y
+		glVertex3f(0.15f, 4.5f, 0);
+		glVertex3f(-0.15f, 4.5f, 0);
+		
+		glColor3f(0, 0, 1);
+		glVertex3i(0, 0, 5);		// z
+		glVertex3f(0.15f, 0, 4.5f);
+		glVertex3f(-0.15f, 0, 4.5f);
+	glEnd();
+
+	// name of direction (axis)255, 135, 50
+	glColor3f(0.01, 0.01, 1);
+	print3dText(5, 0, 0.2, "X");
+	print3dText(0.2, 5, 0, "Y");
+	print3dText(0.2, 0, 5, "Z");
+
+	glEnable(GL_DEPTH_TEST);
+}
+
+//==========================================================================
 void fpsPrint()
 {
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(0.0f, 0.6f, 0.0f);
-	print2dText(0, 0, str_fps.c_str(), "roman24");
+	print2dText(0, 0, str_fps.c_str());
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -122,7 +170,7 @@ void display() {
 				glPointSize(6);
 				glBegin(GL_POINTS);
 					glColor3f(red, green, blue);
-					glVertex3f(red * 20.0f, green * 20.0f + 5, blue * 20.0f);
+					glVertex3f(red * 20.0f, green * 20.0f + 10, blue * 20.0f);
 				glEnd();
 			}
 		}
@@ -140,6 +188,7 @@ void display() {
 	glPopMatrix();
 	gluDeleteQuadric(quadObj);
 
+	drawAxis();
 	fpsPrint();
 
 	glutSwapBuffers();
@@ -225,13 +274,13 @@ int main(int argc, char** argv) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
 	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
 	// освещение (надо поиграться с ним чтобы нормально настроить)
-	glLightfv(GL_LIGHT0, GL_POSITION, pos);
-	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);
+	//glLightfv(GL_LIGHT0, GL_POSITION, pos);
+	//glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);
 
 	std::function<void(unsigned char, int, int)> key_press = [&](unsigned char key, int x, int y)
 	{
