@@ -354,21 +354,21 @@ int main(int argc, char** argv) {
 	};
 	UserEventSystem::getInstance().onMouseWheel.subscribe(mouse_wheel);
 	
-	POINT pointCursor;
-	GetCursorPos(&pointCursor);
+	//POINT pointCursor;
+	//GetCursorPos(&pointCursor);
 	std::function<void(int, int)> mouse_move = [&](int x, int y)
 	{
-		printf("%d %d\n", pointCursor.x, pointCursor.y);
+		printf("%d %d\n", x, y);
 		if (firstMouse)
 		{
-			prev_mouse_x = pointCursor.x;
-			prev_mouse_y = pointCursor.y;
+			prev_mouse_x = x;
+			prev_mouse_y = y;
 			firstMouse = false;
 		}
-		GLfloat xOffset = pointCursor.x - prev_mouse_x;
-		GLfloat yOffset = prev_mouse_y - pointCursor.y;
-		prev_mouse_x = pointCursor.x;
-		prev_mouse_y = pointCursor.y;
+		GLfloat xOffset = x - prev_mouse_x;
+		GLfloat yOffset = prev_mouse_y - y;
+		prev_mouse_x = x;
+		prev_mouse_y = y;
 
 		xOffset *= SENSITIVITY;
 		yOffset *= SENSITIVITY;
