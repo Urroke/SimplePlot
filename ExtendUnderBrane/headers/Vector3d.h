@@ -12,6 +12,11 @@ public:
 	Vector3d(const Vector3d& vector);
 
 	Vector3d& operator = (const Vector3d& vector);
+	Vector3d& operator += (const Vector3d& vector);
+	Vector3d& operator *= (double);
+	double operator * (const Vector3d& vector);
+	Vector3d operator * (double);
+	Vector3d operator + (const Vector3d& vector);
 
 	void setCoordinates(double x, double y, double z);
 	void setVector(const Vector3d& vector);
@@ -20,6 +25,5 @@ public:
 	void normalize();
 	Vector3d normal() const;
 
-	~Vector3d();
 };
 #endif

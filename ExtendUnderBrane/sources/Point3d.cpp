@@ -69,6 +69,14 @@ Point3d& Point3d::operator-=(const Vector3d& vec)
 	return *this;
 }
 
+Point3d& Point3d::operator*=(double scale)
+{
+	this->x *= scale;
+	this->y *= scale;
+	this->z *= scale;
+	return *this;
+}
+
 
 Point3d Point3d::getPoint() const
 {

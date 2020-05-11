@@ -47,11 +47,12 @@ void Curve::render() const
 	glColor3d(1, 0, 0); // red
 	double x_p, y_p;
 	iterator(
-		[&](double x, double y, const int i)->double {
+		[&](double x, double y, int i)->double {
 			Point3d pnt(x, y, 0);
-			pnt = this->lscPoint(pnt);
-			pnt = transform.rotation*pnt;
+			//pnt = this->lcsPoint(pnt);
+			pnt *= transform.scale;
 			pnt = this->gscPoint(pnt);
+			
 			x = pnt.x;
 			y = pnt.y;
 			glBegin(GL_POINTS);
