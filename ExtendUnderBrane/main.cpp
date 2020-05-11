@@ -18,8 +18,8 @@ Scene Scene::instance;
 UserEventSystem UserEventSystem::instance;
 
 // for window
-int WIDTH = 1200, HEIGHT = 800;
-bool FULLSCREEN = false;
+int WIDTH = 800, HEIGHT = 800;
+bool FULLSCREEN = true;
 float FOV = 60.0F;	// for perspective
 // speed of a camera
 const float SPEED_MOVEMENT =  0.05f * 2;
@@ -135,6 +135,8 @@ std::string fps_counter()
 
 //==========================================================================
 constexpr float step = 9.0f / 255.0f;
+int prev_mouse_x = 0, prev_mouse_y = 0;
+bool firstMouse = true;
 void display() {
 	// Clear Color and Depth Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -162,6 +164,32 @@ void display() {
 		glTexCoord2i(1, 0); glVertex3f(100.0f, 0.0f, -100.0f);
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
+	
+	POINT pnt;
+	GetCursorPos(&pnt);
+	int x = pnt.x;
+	int y = pnt.y;
+	
+	printf("%d %d\n", x, y);
+	if (firstMouse)
+	{
+		prev_mouse_x = x;
+		prev_mouse_y = y;
+		firstMouse = false;
+	}
+	GLfloat xOffset = prev_mouse_x - x;
+	GLfloat yOffset = y- prev_mouse_y;
+	prev_mouse_x = x;
+	prev_mouse_y = y;
+
+	xOffset *= SENSITIVITY;
+	yOffset *= SENSITIVITY;
+	if (x != WIDTH / 2 || y != HEIGHT / 2) {
+		MainCamera.tfm.rotateBy(xOffset, Vector3d(0, 1, 0));
+		MainCamera.tfm.rotateBy(yOffset, Vector3d(1, 0, 0));
+		SetCursorPos(WIDTH / 2, HEIGHT / 2);
+	}
+	
 
 	for (float red = 0; red < 1; red += step)
 	{
@@ -229,8 +257,8 @@ int main(int argc, char** argv) {
 	float angleSpeed = SPEED_ROTATE;
 	bool movex = false, movex_ = false, movez = false, movez_ = false;
 	bool moveup = false, movedown = false, moveright = false, moveleft = false;
-	bool firstMouse = true;
-	int prev_mouse_x = 0, prev_mouse_y = 0;
+
+
 
 	//float pos[4] = { 10.0f, 10.0f, 10.0f, 1.f };		// для освещения скопировано
 	//float dir[3] = { 0.f, -1.f, 0.f };	// скопировано, надо тестить как работает
@@ -268,8 +296,8 @@ int main(int argc, char** argv) {
 
 	if(FULLSCREEN)
 		glutFullScreen();
-	glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);	// ставит отображение курсора: перекрестие
-
+	//glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);	// ставит отображение курсора: перекрестие
+	glutSetCursor(GLUT_CURSOR_NONE);
 	// register callbacks
 	glutDisplayFunc(display);
 	glutReshapeFunc(changeSize);
@@ -358,22 +386,7 @@ int main(int argc, char** argv) {
 	//GetCursorPos(&pointCursor);
 	std::function<void(int, int)> mouse_move = [&](int x, int y)
 	{
-		printf("%d %d\n", x, y);
-		if (firstMouse)
-		{
-			prev_mouse_x = x;
-			prev_mouse_y = y;
-			firstMouse = false;
-		}
-		GLfloat xOffset = x - prev_mouse_x;
-		GLfloat yOffset = prev_mouse_y - y;
-		prev_mouse_x = x;
-		prev_mouse_y = y;
-
-		xOffset *= SENSITIVITY;
-		yOffset *= SENSITIVITY;
-		MainCamera.tfm.rotateBy(xOffset, Vector3d(0, 1, 0));
-		MainCamera.tfm.rotateBy(yOffset, Vector3d(1, 0, 0));
+	
 	};
 	UserEventSystem::getInstance().onMouseMove.subscribe(mouse_move);
 
