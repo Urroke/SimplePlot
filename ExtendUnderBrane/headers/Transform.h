@@ -10,6 +10,8 @@ struct Transform
 	Point3d position;
 	Matrix rotation;
 	double scale;
+	Vector3d directionAxis;
+	Vector3d refAxis;
 
 	Transform();
 	Transform(const Point3d&, const Matrix&, double);
@@ -20,6 +22,7 @@ struct Transform
 	Matrix getRotation(double, const Vector3d&);
 	void setRotation(double, const Vector3d&);
 	void rotateBy(double, const Vector3d&);
+	void rotateBy(const Vector3d&);
 };
 
 Vector3d operator*(const Matrix& matrix, const Vector3d& vec);

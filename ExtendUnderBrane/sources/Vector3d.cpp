@@ -13,6 +13,15 @@ Vector3d::Vector3d(double x, double y, double z)
 	this->z = z;
 }
 
+Vector3d Vector3d::multiply(const Vector3d& vec)
+{
+	Vector3d res;
+	res.x = this->y * vec.z - this->z * vec.y;
+	res.y = this->z * vec.x - this->x * vec.z;
+	res.z = this->x * vec.y - this->y * vec.z;
+	return res;
+}
+
 Vector3d::Vector3d(const Vector3d& vector)
 {
 	*this = vector;

@@ -1,11 +1,14 @@
 #include "cmath"
 #include "../headers/Transform.h"
+#include <iostream>
 
 Transform::Transform()
 {
 	position = Point3d(0, 0, 0);
 	setRotation(0, Vector3d(0, 0, 1));
 	scale = 1.;
+	directionAxis = Vector3d(0, 1, 0);
+	refAxis = Vector3d(1, 0, 0);
 }
 
 Vector3d operator*(const Matrix& matrix, const Vector3d& vec)
@@ -84,13 +87,18 @@ void Transform::setRotation(double a, const Vector3d& vec)
 	rotation[2][0] = d.x * d.z * cosa1 - d.y * sina;
 	rotation[2][1] = d.y * d.z * cosa1 + d.x * sina;
 	rotation[2][2] = cosa + d.z * d.z * cosa1;
+	directionAxis = rotation * directionAxis;
+	refAxis = rotation*refAxis;
 }
 
 void Transform::rotateBy(double a, const Vector3d& vec)
 {
 	Matrix rotate = getRotation(a, vec);
 	rotation = rotation * rotate;
+	directionAxis = rotate * directionAxis;
+	refAxis = rotate * refAxis;
 }
+
 
 Matrix Transform::getRotation(double a, const Vector3d& vec)
 {

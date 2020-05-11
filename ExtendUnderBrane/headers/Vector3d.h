@@ -15,7 +15,7 @@ public:
 
 	void setCoordinates(double x, double y, double z);
 	void setVector(const Vector3d& vector);
-
+	Vector3d multiply(const Vector3d&);
 	double magnitude() const;
 	void normalize();
 	Vector3d normal() const;

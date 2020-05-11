@@ -19,7 +19,7 @@ UserEventSystem UserEventSystem::instance;
 
 // for window
 int WIDTH = 800, HEIGHT = 800;
-bool FULLSCREEN = true;
+bool FULLSCREEN = false;
 float FOV = 60.0F;	// for perspective
 // speed of a camera
 const float SPEED_MOVEMENT =  0.05f * 2;
@@ -185,8 +185,8 @@ void display() {
 	xOffset *= SENSITIVITY;
 	yOffset *= SENSITIVITY;
 	if (x != WIDTH / 2 || y != HEIGHT / 2) {
-		MainCamera.tfm.rotateBy(xOffset, Vector3d(0, 1, 0));
-		MainCamera.tfm.rotateBy(yOffset, Vector3d(1, 0, 0));
+		MainCamera.rotateBy(Vector3d(yOffset*0.5, xOffset * 0.5, 0));
+		//MainCamera.tfm.rotateBy(Vector3d(1, 0, 0));
 		SetCursorPos(WIDTH / 2, HEIGHT / 2);
 	}
 	

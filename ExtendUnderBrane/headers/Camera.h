@@ -23,7 +23,7 @@ public:
 	}
 
 	Transform tfm;
-
+	void rotateBy(const Vector3d& vec);
 	void update();
 
 	~Camera() = default;
