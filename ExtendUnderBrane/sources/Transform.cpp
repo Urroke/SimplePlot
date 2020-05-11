@@ -69,6 +69,16 @@ void Transform::setPosition(const Point3d& position)
 	this->position = position;
 }
 
+void Transform::moveUp(double y)
+{
+	this->position.y += y;
+}
+
+void Transform::moveDown(double y)
+{
+	this->position.y -= y;
+}
+
 void Transform::setRotation(double a, const Vector3d& vec)
 {
 	Vector3d d = vec.normal();
@@ -89,6 +99,61 @@ void Transform::setRotation(double a, const Vector3d& vec)
 void Transform::rotateBy(double a, const Vector3d& vec)
 {
 	Matrix rotate = getRotation(a, vec);
+	rotation = rotation * rotate;
+}
+
+// x axis
+void Transform::rotatePitch(double angle)
+{
+	Matrix rotate = getRotation(angle, Vector3d(1, 0, 0));
+	rotate[0][0] = 1;
+	rotate[0][1] = 0;
+	rotate[0][2] = 0;
+
+	rotate[1][0] = 0;
+	rotate[1][1] = cos(angle);
+	rotate[1][2] = -sin(angle);
+	
+	rotate[2][0] = 0;
+	rotate[2][1] = sin(angle);
+	rotate[2][2] = cos(angle);
+	rotation = rotate * rotation;
+}
+
+// y axis
+void Transform::rotateYaw(double angle)
+{
+	//Matrix rotate = getRotation(angle, Vector3d(0, 1, 0));
+	Matrix rotate;
+	rotate[0][0] = cos(angle);
+	rotate[0][1] = 0;
+	rotate[0][2] = sin(angle);
+
+	rotate[1][0] = 0;
+	rotate[1][1] = 1;
+	rotate[1][2] = 0;
+
+	rotate[2][0] = -sin(angle);
+	rotate[2][1] = 0;
+	rotate[2][2] = cos(angle);
+	rotation = rotation * rotate;
+}
+
+// z axis
+void Transform::rotateRoll(double angle)	
+{
+	Matrix rotate = getRotation(angle, Vector3d(0, 0, 1));
+	rotate[0][0] = cos(angle);
+	rotate[0][1] = -sin(angle);
+	rotate[0][2] = 0;
+
+	rotate[1][0] = sin(angle);
+	rotate[1][1] = cos(angle);
+	rotate[1][2] = 0;
+
+	rotate[2][0] = 0;
+	rotate[2][1] = 0;
+	rotate[2][2] = 1;
 	rotation = rotation * rotate;
 }
 

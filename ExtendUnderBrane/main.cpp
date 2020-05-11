@@ -134,9 +134,39 @@ std::string fps_counter()
 }
 
 //==========================================================================
-constexpr float step = 9.0f / 255.0f;
 int prev_mouse_x = 0, prev_mouse_y = 0;
 bool firstMouse = true;
+void mouse_move()
+{
+	POINT pnt;
+	GetCursorPos(&pnt);
+	int x = pnt.x;
+	int y = pnt.y;
+
+	printf("%d %d\n", x, y);
+	if (firstMouse)
+	{
+		prev_mouse_x = x;
+		prev_mouse_y = y;
+		firstMouse = false;
+	}
+	GLfloat xOffset = float(prev_mouse_x - x);
+	GLfloat yOffset = float(y - prev_mouse_y);
+	prev_mouse_x = x;
+	prev_mouse_y = y;
+
+	xOffset *= SENSITIVITY;
+	yOffset *= SENSITIVITY;
+	if (x != WIDTH / 2 || y != HEIGHT / 2) {
+		MainCamera.tfm.rotateYaw(xOffset);
+
+		MainCamera.tfm.rotatePitch(yOffset);
+		SetCursorPos(WIDTH / 2, HEIGHT / 2);
+	}
+}
+
+//==========================================================================
+constexpr float step = 9.0f / 255.0f;
 void display() {
 	// Clear Color and Depth Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -152,6 +182,7 @@ void display() {
 
 	MainCamera.update();
 	Scene::getInstance().render();
+	mouse_move();
 
 	glEnable(GL_TEXTURE_2D);
 	TextureManager::Inst()->BindTexture(textures[0]);
@@ -165,32 +196,6 @@ void display() {
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	
-	POINT pnt;
-	GetCursorPos(&pnt);
-	int x = pnt.x;
-	int y = pnt.y;
-	
-	printf("%d %d\n", x, y);
-	if (firstMouse)
-	{
-		prev_mouse_x = x;
-		prev_mouse_y = y;
-		firstMouse = false;
-	}
-	GLfloat xOffset = prev_mouse_x - x;
-	GLfloat yOffset = y- prev_mouse_y;
-	prev_mouse_x = x;
-	prev_mouse_y = y;
-
-	xOffset *= SENSITIVITY;
-	yOffset *= SENSITIVITY;
-	if (x != WIDTH / 2 || y != HEIGHT / 2) {
-		MainCamera.tfm.rotateBy(xOffset, Vector3d(0, 1, 0));
-		MainCamera.tfm.rotateBy(yOffset, Vector3d(1, 0, 0));
-		SetCursorPos(WIDTH / 2, HEIGHT / 2);
-	}
-	
-
 	for (float red = 0; red < 1; red += step)
 	{
 		for (float green = 0; green < 1; green += step)
@@ -210,11 +215,11 @@ void display() {
 	glPushMatrix();
 		GLUquadricObj* quadObj = gluNewQuadric();
 		glColor3f(1.f, 1.f, 0.f);
-		gluQuadricDrawStyle(quadObj, GLU_FILL);
+		gluQuadricDrawStyle(quadObj, GLU_LINE);
 		GLfloat color[] = { 1,1,1,0 };
-		glMaterialfv(GL_LIGHT0, GL_POSITION, color);
+		//glMaterialfv(GL_LIGHT0, GL_POSITION, color);
 		glTranslatef(10.0f, 60.0f, 10.0f);
-		gluSphere(quadObj, 10, 100, 100); 
+		gluSphere(quadObj, 10, 10, 10); 
 	glPopMatrix();
 	gluDeleteQuadric(quadObj);
 
@@ -258,8 +263,6 @@ int main(int argc, char** argv) {
 	bool movex = false, movex_ = false, movez = false, movez_ = false;
 	bool moveup = false, movedown = false, moveright = false, moveleft = false;
 
-
-
 	//float pos[4] = { 10.0f, 10.0f, 10.0f, 1.f };		// для освещения скопировано
 	//float dir[3] = { 0.f, -1.f, 0.f };	// скопировано, надо тестить как работает
 
@@ -275,13 +278,13 @@ int main(int argc, char** argv) {
 		if (movex)
 			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(-speed, 0, 0.0);
 		if (moveleft)
-			MainCamera.tfm.rotateBy(angleSpeed, Vector3d(0, 1, 0));
+			MainCamera.tfm.rotateRoll(-angleSpeed);
 		if (moveright)
-			MainCamera.tfm.rotateBy(-angleSpeed, Vector3d(0, 1, 0));
+			MainCamera.tfm.rotateRoll(angleSpeed);
 		if (moveup)
-			MainCamera.tfm.rotateBy(angleSpeed, Vector3d(1, 0, 0));
+			MainCamera.tfm.moveUp(speed);
 		if (movedown)
-			MainCamera.tfm.rotateBy(-angleSpeed, Vector3d(1, 0, 0));
+			MainCamera.tfm.moveDown(speed);
 		});
 	TextureManager::Inst()->UnloadAllTextures();
 
@@ -296,8 +299,8 @@ int main(int argc, char** argv) {
 
 	if(FULLSCREEN)
 		glutFullScreen();
-	//glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);	// ставит отображение курсора: перекрестие
 	glutSetCursor(GLUT_CURSOR_NONE);
+
 	// register callbacks
 	glutDisplayFunc(display);
 	glutReshapeFunc(changeSize);
@@ -384,11 +387,11 @@ int main(int argc, char** argv) {
 	
 	//POINT pointCursor;
 	//GetCursorPos(&pointCursor);
-	std::function<void(int, int)> mouse_move = [&](int x, int y)
+	/*std::function<void(int, int)> mouse_move = [&](int x, int y)
 	{
 	
 	};
-	UserEventSystem::getInstance().onMouseMove.subscribe(mouse_move);
+	UserEventSystem::getInstance().onMouseMove.subscribe(mouse_move);*/
 
 	glutMainLoop();
 
