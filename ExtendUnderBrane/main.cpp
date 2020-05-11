@@ -4,11 +4,12 @@
 #include "headers/Camera.h"
 #include "headers/Cube.h"
 #include "headers/TextureManager.h"
+#include <chrono>
 
 #define ESCAPE 27
 
-const unsigned int amount_textures = 2;
-unsigned int textures[amount_textures] = { 0, 1 };
+//const unsigned int amount_textures = 2;
+//unsigned int textures[amount_textures] = { 0, 1 };
 //==========================================================================
 // define global variable
 Camera Camera::instance;
@@ -16,20 +17,21 @@ Camera Camera::instance;
 
 Scene Scene::instance;
 UserEventSystem UserEventSystem::instance;
-
+// for fps counter
+int FRAMES = 0;
+unsigned long long CURR_TIME = 0, LAST_TIME = 0;
+std::string STR_FPS;
 // for window
 int WIDTH = 800, HEIGHT = 800;
 bool FULLSCREEN = false;
 float FOV = 60.0F;	// for perspective
 // speed of a camera
-const float SPEED_MOVEMENT =  0.05f * 2;
-const float SPEED_ROTATE =    0.005f * 2;
-const float SENSITIVITY = 0.001f;
+float DELTA_TIME = 0;
+float SPEED_MOVEMENT =  DELTA_TIME * 1;
+float SPEED_ROTATE = DELTA_TIME;
+float SENSITIVITY = DELTA_TIME;
 
-// for fps counter
-int FRAMES = 0;
-unsigned long long CURR_TIME = 0, LAST_TIME = 0, DELTA_TIME = 0;
-std::string STR_FPS;
+
 
 //==========================================================================
 // set of standart fonts
@@ -134,10 +136,18 @@ std::string fps_counter()
 }
 
 //==========================================================================
-constexpr float step = 9.0f / 255.0f;
 int prev_mouse_x = 0, prev_mouse_y = 0;
 bool firstMouse = true;
+void mouse_move()
+{
+	
+}
+
+//==========================================================================
+constexpr float step = 5.0f / 255.0f;
 void display() {
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
 	// Clear Color and Depth Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -152,9 +162,32 @@ void display() {
 
 	MainCamera.update();
 	Scene::getInstance().render();
+	//mouse_move();
 
-	glEnable(GL_TEXTURE_2D);
-	TextureManager::Inst()->BindTexture(textures[0]);
+	POINT pnt;
+	GetCursorPos(&pnt);
+	int x = pnt.x;
+	int y = pnt.y;
+
+	printf("%d %d\n", x, y);
+	if (firstMouse)
+	{
+		prev_mouse_x = x;
+		prev_mouse_y = y;
+		firstMouse = false;
+	}
+	GLfloat xOffset = float(prev_mouse_x - x);
+	GLfloat yOffset = float(y - prev_mouse_y);
+	prev_mouse_x = x;
+	prev_mouse_y = y;
+
+	xOffset *= SENSITIVITY;
+	yOffset *= SENSITIVITY;
+	if (x != WIDTH / 2 || y != HEIGHT / 2) {
+		MainCamera.rotateBy(Vector3d(yOffset, xOffset, 0));
+		//SetCursorPos(WIDTH / 2, HEIGHT / 2);
+	}
+
 	// Draw ground
 	glColor3f(0.7f, 0.7f, 0.7f);
 	glBegin(GL_QUADS);			//plane
@@ -163,34 +196,8 @@ void display() {
 		glTexCoord2i(1, 1); glVertex3f(100.0f, 0.0f, 100.0f);
 		glTexCoord2i(1, 0); glVertex3f(100.0f, 0.0f, -100.0f);
 	glEnd();
-	glDisable(GL_TEXTURE_2D);
 	
-	POINT pnt;
-	GetCursorPos(&pnt);
-	int x = pnt.x;
-	int y = pnt.y;
-	
-	printf("%d %d\n", x, y);
-	if (firstMouse)
-	{
-		prev_mouse_x = x;
-		prev_mouse_y = y;
-		firstMouse = false;
-	}
-	GLfloat xOffset = prev_mouse_x - x;
-	GLfloat yOffset = y- prev_mouse_y;
-	prev_mouse_x = x;
-	prev_mouse_y = y;
-
-	xOffset *= SENSITIVITY;
-	yOffset *= SENSITIVITY;
-	if (x != WIDTH / 2 || y != HEIGHT / 2) {
-		MainCamera.rotateBy(Vector3d(yOffset*0.5, xOffset * 0.5, 0));
-		//MainCamera.tfm.rotateBy(Vector3d(1, 0, 0));
-		SetCursorPos(WIDTH / 2, HEIGHT / 2);
-	}
-	
-
+	// gradient cube
 	for (float red = 0; red < 1; red += step)
 	{
 		for (float green = 0; green < 1; green += step)
@@ -210,11 +217,11 @@ void display() {
 	glPushMatrix();
 		GLUquadricObj* quadObj = gluNewQuadric();
 		glColor3f(1.f, 1.f, 0.f);
-		gluQuadricDrawStyle(quadObj, GLU_FILL);
+		gluQuadricDrawStyle(quadObj, GLU_LINE);
 		GLfloat color[] = { 1,1,1,0 };
-		glMaterialfv(GL_LIGHT0, GL_POSITION, color);
+		//glMaterialfv(GL_LIGHT0, GL_POSITION, color);
 		glTranslatef(10.0f, 60.0f, 10.0f);
-		gluSphere(quadObj, 10, 100, 100); 
+		gluSphere(quadObj, 10, 10, 10); 
 	glPopMatrix();
 	gluDeleteQuadric(quadObj);
 
@@ -222,6 +229,13 @@ void display() {
 	fpsPrint();
 
 	glutSwapBuffers();
+	end = std::chrono::system_clock::now();
+
+	double elapsed_seconds = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()/1E9;
+	DELTA_TIME = elapsed_seconds;
+	SPEED_MOVEMENT = DELTA_TIME * 10;
+	SPEED_ROTATE = DELTA_TIME * 2;
+	SENSITIVITY = DELTA_TIME;
 }
 
 //==========================================================================
@@ -253,37 +267,30 @@ void changeSize(int w, int h) {
 
 //==========================================================================
 int main(int argc, char** argv) {
-	float speed = SPEED_MOVEMENT;
-	float angleSpeed = SPEED_ROTATE;
 	bool movex = false, movex_ = false, movez = false, movez_ = false;
 	bool moveup = false, movedown = false, moveright = false, moveleft = false;
-
-
 
 	//float pos[4] = { 10.0f, 10.0f, 10.0f, 1.f };		// для освещения скопировано
 	//float dir[3] = { 0.f, -1.f, 0.f };	// скопировано, надо тестить как работает
 
-	TextureManager::Inst()->LoadTexture("../../textures/snow.jpeg", textures[0]);
-
 	Scene::getInstance().subscribeCallBack([&]() -> void {
 		if (movez)
-			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(0, 0, speed);
+			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(0, 0, SPEED_MOVEMENT);
 		if (movex_)
-			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(speed, 0, 0.0);
+			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(SPEED_MOVEMENT, 0, 0.0);
 		if (movez_)
-			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(0, 0, -speed);
+			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(0, 0, -SPEED_MOVEMENT);
 		if (movex)
-			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(-speed, 0, 0.0);
+			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(-SPEED_MOVEMENT, 0, 0.0);
 		if (moveleft)
-			MainCamera.tfm.rotateBy(angleSpeed, Vector3d(0, 1, 0));
+			MainCamera.tfm.rotateBy(SPEED_ROTATE, Vector3d(0, 0, -1));
 		if (moveright)
-			MainCamera.tfm.rotateBy(-angleSpeed, Vector3d(0, 1, 0));
+			MainCamera.tfm.rotateBy(SPEED_ROTATE, Vector3d(0, 0, 1));
 		if (moveup)
-			MainCamera.tfm.rotateBy(angleSpeed, Vector3d(1, 0, 0));
+			MainCamera.tfm.translateTo(Vector3d(0, SPEED_MOVEMENT, 0));
 		if (movedown)
-			MainCamera.tfm.rotateBy(-angleSpeed, Vector3d(1, 0, 0));
+			MainCamera.tfm.translateTo(Vector3d(0, -SPEED_MOVEMENT, 0));
 		});
-	TextureManager::Inst()->UnloadAllTextures();
 
 	MainCamera.tfm.position = Point3d(5, 10, -50);
 
@@ -296,8 +303,8 @@ int main(int argc, char** argv) {
 
 	if(FULLSCREEN)
 		glutFullScreen();
-	//glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);	// ставит отображение курсора: перекрестие
 	glutSetCursor(GLUT_CURSOR_NONE);
+
 	// register callbacks
 	glutDisplayFunc(display);
 	glutReshapeFunc(changeSize);
@@ -384,11 +391,11 @@ int main(int argc, char** argv) {
 	
 	//POINT pointCursor;
 	//GetCursorPos(&pointCursor);
-	std::function<void(int, int)> mouse_move = [&](int x, int y)
+	/*std::function<void(int, int)> mouse_move = [&](int x, int y)
 	{
 	
 	};
-	UserEventSystem::getInstance().onMouseMove.subscribe(mouse_move);
+	UserEventSystem::getInstance().onMouseMove.subscribe(mouse_move);*/
 
 	glutMainLoop();
 

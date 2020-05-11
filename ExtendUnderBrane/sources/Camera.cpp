@@ -13,12 +13,21 @@ Camera& Camera::operator=(Camera const&)
 //Rotate body in local coordinate system
 void Camera::rotateBy(const Vector3d& vec)
 {
-	Matrix rotate = tfm.getRotation(vec.y, Vector3d(0, 1, 0));
-	tfm.refAxis = rotate * tfm.refAxis;
-	tfm.directionAxis = rotate * tfm.directionAxis;
 	tfm.rotateBy(vec.y, Vector3d(0, 1, 0));
 	tfm.rotateBy(vec.x, tfm.refAxis);
+	//tfm.refAxis = rotate * tfm.refAxis;
+	//tfm.directionAxis = rotate * tfm.directionAxis;
+	
+	
+	//tfm.refAxis = rotate1 * tfm.refAxis;
+	//tfm.directionAxis = rotate1 * tfm.directionAxis;
 	//rotateBy(vec.z, refAxis.multiply(directionAxis));
+}
+
+void Camera::translateBy(const Vector3d& vec)
+{
+	Vector3d zAxis = tfm.directionAxis;
+	Vector3d yAxis = tfm.refAxis*-1;
 }
 
 void Camera::lookAt(const Point3d& position, const Point3d& target, const Vector3d& refAxis)
