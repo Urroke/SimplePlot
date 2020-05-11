@@ -24,7 +24,7 @@ public:
 
 	Transform tfm;
 	void rotateBy(const Vector3d& vec);
-	void translateBy(const Vector3d& vec);
+	void translateTo(const Vector3d& vec);
 	void update();
 
 	~Camera() = default;

@@ -233,9 +233,9 @@ void display() {
 
 	double elapsed_seconds = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()/1E9;
 	DELTA_TIME = elapsed_seconds;
-	SPEED_MOVEMENT = DELTA_TIME * 10;
-	SPEED_ROTATE = DELTA_TIME * 2;
-	SENSITIVITY = DELTA_TIME;
+	SPEED_MOVEMENT = DELTA_TIME * 20;
+	SPEED_ROTATE = DELTA_TIME;
+	SENSITIVITY = DELTA_TIME / 4;
 }
 
 //==========================================================================
@@ -275,21 +275,21 @@ int main(int argc, char** argv) {
 
 	Scene::getInstance().subscribeCallBack([&]() -> void {
 		if (movez)
-			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(0, 0, SPEED_MOVEMENT);
+			MainCamera.translateTo(Vector3d(0, 0, SPEED_MOVEMENT));
 		if (movex_)
-			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(SPEED_MOVEMENT, 0, 0.0);
+			MainCamera.translateTo(Vector3d(-SPEED_MOVEMENT, 0, 0.0));
 		if (movez_)
-			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(0, 0, -SPEED_MOVEMENT);
+			MainCamera.translateTo(Vector3d(0, 0, -SPEED_MOVEMENT));
 		if (movex)
-			MainCamera.tfm.position += MainCamera.tfm.rotation * Vector3d(-SPEED_MOVEMENT, 0, 0.0);
+			MainCamera.translateTo(Vector3d(SPEED_MOVEMENT, 0, 0.0));
 		if (moveleft)
 			MainCamera.tfm.rotateBy(SPEED_ROTATE, Vector3d(0, 0, -1));
 		if (moveright)
 			MainCamera.tfm.rotateBy(SPEED_ROTATE, Vector3d(0, 0, 1));
 		if (moveup)
-			MainCamera.tfm.translateTo(Vector3d(0, SPEED_MOVEMENT, 0));
+			MainCamera.translateTo(Vector3d(0, SPEED_MOVEMENT, 0));
 		if (movedown)
-			MainCamera.tfm.translateTo(Vector3d(0, -SPEED_MOVEMENT, 0));
+			MainCamera.translateTo(Vector3d(0, -SPEED_MOVEMENT, 0));
 		});
 
 	MainCamera.tfm.position = Point3d(5, 10, -50);

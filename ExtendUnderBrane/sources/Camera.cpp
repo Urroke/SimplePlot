@@ -15,6 +15,7 @@ void Camera::rotateBy(const Vector3d& vec)
 {
 	tfm.rotateBy(vec.y, Vector3d(0, 1, 0));
 	tfm.rotateBy(vec.x, tfm.refAxis);
+	//tfm.rotateBy(vec.x, tfm.refAxis.multiply(tfm.directionAxis));
 	//tfm.refAxis = rotate * tfm.refAxis;
 	//tfm.directionAxis = rotate * tfm.directionAxis;
 	
@@ -24,10 +25,15 @@ void Camera::rotateBy(const Vector3d& vec)
 	//rotateBy(vec.z, refAxis.multiply(directionAxis));
 }
 
-void Camera::translateBy(const Vector3d& vec)
+void Camera::translateTo(const Vector3d& vec)
 {
-	Vector3d zAxis = tfm.directionAxis;
-	Vector3d yAxis = tfm.refAxis*-1;
+	Vector3d yAxis = tfm.directionAxis;
+	Vector3d xAxis = tfm.refAxis*-1;
+	Vector3d zAxis = tfm.refAxis.multiply(tfm.directionAxis);
+	
+	Vector3d res = xAxis * vec.x + yAxis * vec.y + zAxis * vec.z;
+
+	tfm.translateTo(res);
 }
 
 void Camera::lookAt(const Point3d& position, const Point3d& target, const Vector3d& refAxis)
