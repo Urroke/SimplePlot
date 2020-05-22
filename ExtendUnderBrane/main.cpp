@@ -5,6 +5,7 @@
 #include "headers/Cube.h"
 #include "headers/TextureManager.h"
 #include <chrono>
+#include "Circle.h"
 
 #define ESCAPE 27
 
@@ -13,9 +14,11 @@
 //==========================================================================
 // define global variable
 Camera Camera::instance;
-#define MainCamera Camera::getInstance()
-
 Scene Scene::instance;
+#define MainCamera Camera::getInstance()
+#define MainScene Scene::getInstance()
+
+
 UserEventSystem UserEventSystem::instance;
 // for fps counter
 int FRAMES = 0;
@@ -198,7 +201,7 @@ void display() {
 	glEnd();
 	
 	// gradient cube
-	for (float red = 0; red < 1; red += step)
+	/*for (float red = 0; red < 1; red += step)
 	{
 		for (float green = 0; green < 1; green += step)
 		{
@@ -211,7 +214,7 @@ void display() {
 				glEnd();
 			}
 		}
-	}
+	}*/
 
 	// yellow sphere
 	glPushMatrix();
@@ -272,7 +275,11 @@ int main(int argc, char** argv) {
 
 	//float pos[4] = { 10.0f, 10.0f, 10.0f, 1.f };		// для освещения скопировано
 	//float dir[3] = { 0.f, -1.f, 0.f };	// скопировано, надо тестить как работает
+	Circle ex(10);
+	MainScene += ex;
 
+	ex.transform.translateTo(Vector3d(10,0, -20));
+	ex.transform.rotateBy(3.14 / 6, Vector3d(0, 1, 0));
 	Scene::getInstance().subscribeCallBack([&]() -> void {
 		if (movez)
 			MainCamera.translateTo(Vector3d(0, 0, SPEED_MOVEMENT));
@@ -291,9 +298,8 @@ int main(int argc, char** argv) {
 		if (movedown)
 			MainCamera.translateTo(Vector3d(0, -SPEED_MOVEMENT, 0));
 		});
-
+	
 	MainCamera.tfm.position = Point3d(5, 10, -50);
-
 	// init GLUT and create window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);

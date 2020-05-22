@@ -41,7 +41,7 @@ void Scene::render()
 	}
 	//for (auto& callBack : callBacks)
 	//	(*callBack)();
-	callBack();
+	if(callBack)callBack();
 }
 
 void Scene::subscribeCallBack(const std::function<void(void)>& call)

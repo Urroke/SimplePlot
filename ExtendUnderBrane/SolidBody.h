@@ -1,6 +1,6 @@
 #pragma once
-#include "Vector3d.h"
-#include "SceneObject.h"
+#include "headers/Vector3d.h"
+#include "headers/SceneObject.h"
 
 class SolidBody : public SceneObject
 {

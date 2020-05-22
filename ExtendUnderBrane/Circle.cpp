@@ -17,7 +17,7 @@ Circle::~Circle()
 {
 }
 
-void Circle::collision(SolidBody* obj)
+/*void Circle::collision(SolidBody* obj)
 {
 	Circle* _obj = (Circle*)(obj);
 	Vector3d direction = _obj->transform.position - this->transform.position;
@@ -50,11 +50,11 @@ void Circle::collision(SolidBody* obj)
 		_obj->velocity = direction;
 	}
 
-}
+}*/
 
 void Circle::render() const
 {
-	double step = 0.1;
+	double step = 0.001;
 	glPointSize(1.);
 	glEnable(GL_POINT_SMOOTH);
 	glColor3d(1, 0, 0);
@@ -66,16 +66,18 @@ void Circle::render() const
 		y = radius * std::sin(r);
 		Point3d pnt(x, y, 0);
 		pnt *= transform.scale;
+		pnt = transform.rotation * pnt;
 		pnt = this->gscPoint(pnt);
 		x = pnt.x;
 		y = pnt.y;
+		double z = pnt.z;
 		glBegin(GL_POINTS);
-		glVertex3d(x, y, 0);
+		glVertex3d(x, y, z);
 		glEnd();
 		glBegin(GL_LINES);
-		glVertex3d(x, y, 0);
+		glVertex3d(x, y, z);
 		if (i > 0)
-			glVertex3d(x, y, 0);
+			glVertex3d(x, y, z);
 		glEnd();
 	}
 }
